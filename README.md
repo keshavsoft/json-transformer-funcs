@@ -1,6 +1,22 @@
 # json-transformer-funcs
 
+[![npm version](https://img.shields.io/npm/v/json-transformer-funcs.svg?style=flat-square)](https://www.npmjs.com/package/json-transformer-funcs)
+[![docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue.svg?style=flat-square)](https://keshavsoft.github.io/json-transformer-funcs/)
+[![GitHub repo](https://img.shields.io/badge/GitHub-keshavsoft%2Fjson--transformer--funcs-181717?style=flat-square&logo=github)](https://github.com/keshavsoft/json-transformer-funcs)
+[![license](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/keshavsoft/json-transformer-funcs/blob/main/package.json)
+
 > Pure JavaScript transformation functions that compile tabular data into structured JSON-to-tag table specifications.
+
+---
+
+## 🔗 Quick Links
+
+| Resource | Link | Description |
+| :--- | :--- | :--- |
+| 📦 **npm Registry** | [npmjs.com/package/json-transformer-funcs](https://www.npmjs.com/package/json-transformer-funcs) | Install via npm |
+| 🐙 **GitHub Repository** | [github.com/keshavsoft/json-transformer-funcs](https://github.com/keshavsoft/json-transformer-funcs) | Source code, issues & releases |
+| 🌐 **GitHub Pages Docs** | [keshavsoft.github.io/json-transformer-funcs](https://keshavsoft.github.io/json-transformer-funcs/) | Live documentation website |
+| 📖 **Internal Docs** | [docs/README.md](docs/README.md) | In-repo architectural reference |
 
 ---
 
@@ -30,7 +46,11 @@ Building a clean, flexible data table without mixing concerns requires three dis
 
 ---
 
-## 🚀 Quickstart
+## 🚀 Installation & Quickstart
+
+```bash
+npm install json-transformer-funcs
+```
 
 ```javascript
 import { tableFromData } from "json-transformer-funcs";
@@ -55,7 +75,7 @@ console.log(JSON.stringify(fullTable, null, 2));
 ### 1. `collectionFromKey(inSource, inTemplate)`
 Transforms column definitions into an array of header nodes (`<th>`).
 - Reads the key placeholder directly from `inTemplate.textContent` (e.g., `"${columnName}"`).
-- Extracts each column's name without needing hardcoded keys.
+- Extracts each column's name dynamically without needing hardcoded keys.
 
 ### 2. `collectionFromInternal(inSource, outerTemplate, innerTemplate)`
 Transforms row records into an array of row nodes (`<tr>`) containing child cells (`<td>`).
@@ -70,7 +90,7 @@ The unified orchestrator that brings everything together into a single step:
 
 ---
 
-## 📂 Example Files
+## 📂 Example Input Files
 
 ### `data.json`
 ```json
@@ -130,7 +150,7 @@ The unified orchestrator that brings everything together into a single step:
 
 ---
 
-## 🎯 Output
+## 🎯 Output Tree
 
 ```json
 {
@@ -174,6 +194,14 @@ The unified orchestrator that brings everything together into a single step:
   ]
 }
 ```
+
+---
+
+## 🔗 Related Resources
+- 🌐 [GitHub Pages Documentation](https://keshavsoft.github.io/json-transformer-funcs/)
+- 📦 [npm Package](https://www.npmjs.com/package/json-transformer-funcs)
+- 🐙 [GitHub Repository](https://github.com/keshavsoft/json-transformer-funcs)
+- 🐛 [Issue Tracker](https://github.com/keshavsoft/json-transformer-funcs/issues)
 
 ---
 
