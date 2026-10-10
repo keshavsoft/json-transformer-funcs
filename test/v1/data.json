@@ -1,0 +1,20 @@
+{
+    "columns": [
+        {
+            "columnName": "itemName"
+        },
+        {
+            "columnName": "reservedName"
+        }
+    ],
+    "rows": [
+        {
+            "itemName": "0.09/30mm",
+            "reservedName": ""
+        },
+        {
+            "itemName": "Keshav",
+            "reservedName": "Nalam"
+        }
+    ]
+}

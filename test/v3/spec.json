@@ -1,0 +1,15 @@
+{
+    "buildHeader": {
+        "tagName": "th",
+        "textContent": "${columnName}"
+    },
+    "buildBody": {
+        "outerTemplate": {
+            "tagName": "tr"
+        },
+        "innerTemplate": {
+            "tagName": "td",
+            "textContent": "${rowValue}"
+        }
+    }
+}
