@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>json-transformer-funcs — Declarative Table Spec Compiler & json-to-tag CDN Renderer</title>
+  <meta name="description" content="Demonstration of pure JSON transformation functions compiling tabular data into structured table specifications, rendered live into the DOM with json-to-tag CDN.">
+  
+  <!-- Modern Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg-surface: #0f172a;
+      --bg-card: #1e293b;
+      --border-color: #334155;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      min-height: 100vh;
+    }
+
+    .hero-banner {
+      background: radial-gradient(circle at top right, #312e81, #0f172a 70%);
+      color: #ffffff;
+      border-radius: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+    .metric-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+    }
+
+    .tab-btn {
+      font-weight: 500;
+      border-radius: 0.5rem !important;
+      padding: 0.5rem 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background-color: var(--primary) !important;
+      color: #fff !important;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+
+    .code-viewer {
+      background-color: #090d16;
+      color: #7dd3fc;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      border-radius: 0.75rem;
+      max-height: 520px;
+      overflow-y: auto;
+      border: 1px solid #1e293b;
+    }
+
+    .flow-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+    }
+
+    .flow-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.07);
+    }
+
+    .custom-table-container table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    .status-pill {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .nav-tabs .nav-link {
+      color: #64748b;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 0.6rem 1rem;
+    }
+    .nav-tabs .nav-link.active {
+      color: var(--primary);
+      border-bottom: 2px solid var(--primary);
+      background: transparent;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="py-4">
+  <div class="container-xl">
+    <!-- Header Hero -->
+    <header class="hero-banner p-4 p-md-5 mb-4 shadow-sm">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-indigo-500 text-white" style="background-color: #6366f1;">v1.3.1</span>
+            <span class="badge bg-success-subtle text-success border border-success" id="cdn-status-badge">
+              <i class="bi bi-broadcast me-1"></i>json-to-tag CDN Live (v9)
+            </span>
+          </div>
+          <h1 class="display-6 fw-bold mb-2">json-transformer-funcs</h1>
+          <p class="lead text-white-50 mb-4 fs-6">
+            Pure declarative JSON transformation engine that merges tabular data (<code>columns</code>, <code>rows</code>) into an HTML-ready spec tree, rendered live via <strong>json-to-tag</strong> CDN.
+          </p>
+          <div class="d-flex flex-wrap gap-2">
+            <a href="https://github.com/keshavsoft/json-transformer-funcs" target="_blank" class="btn btn-outline-light btn-sm px-3 rounded-pill">
+              <i class="bi bi-github me-1"></i>Transformer Repo
+            </a>
+            <a href="https://keshavsoft.github.io/json-to-tag/" target="_blank" class="btn btn-outline-light btn-sm px-3 rounded-pill">
+              <i class="bi bi-box-arrow-up-right me-1"></i>json-to-tag Docs
+            </a>
+            <a href="./simple.html" class="btn btn-success btn-sm px-3 rounded-pill fw-medium text-white">
+              <i class="bi bi-file-earmark-code me-1"></i>Minimal Simple HTML
+            </a>
+            <a href="./samples/table/index.html" class="btn btn-light btn-sm px-3 rounded-pill fw-medium text-dark">
+              <i class="bi bi-folder2-open me-1"></i>Samples Folder
+            </a>
+            <a href="./samples/cdn-standalone.html" class="btn btn-warning btn-sm px-3 rounded-pill fw-medium text-dark">
+              <i class="bi bi-lightning-charge-fill me-1"></i>Standalone File
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-4 mt-4 mt-lg-0">
+          <div class="bg-black bg-opacity-25 p-3 rounded-3 border border-white border-opacity-10">
+            <div class="text-uppercase small text-white-50 fw-semibold mb-2">Live Render Pipeline</div>
+            <div class="d-flex flex-column gap-2 small">
+              <div class="d-flex justify-content-between align-items-center">
+                <span>1. Data &amp; Blueprint:</span>
+                <span class="badge bg-secondary metric-badge">data + spec + table</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span>2. Transformer:</span>
+                <span class="badge bg-primary metric-badge">tableFromData()</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span>3. DOM Engine CDN:</span>
+                <span class="badge bg-success metric-badge">json-to-tag v9</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center pt-2 border-top border-white border-opacity-10">
+                <span>Render Time:</span>
+                <span class="text-warning fw-bold metric-badge" id="metric-render-time">0.0 ms</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Architecture Overview Cards -->
+    <section class="row g-3 mb-4" id="architecture-section">
+      <div class="col-md-4">
+        <div class="flow-card p-3 h-100">
+          <div class="d-flex align-items-center gap-2 mb-2 text-primary">
+            <i class="bi bi-layers-fill fs-5"></i>
+            <h2 class="h6 fw-bold mb-0 text-dark">1. Three Decoupled Inputs</h2>
+          </div>
+          <p class="text-muted small mb-0">
+            Separation of concerns: <strong>data.json</strong> (raw data), <strong>spec.json</strong> (cell blueprints), and <strong>table.json</strong> (outer scaffold).
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="flow-card p-3 h-100">
+          <div class="d-flex align-items-center gap-2 mb-2 text-indigo-600" style="color: #4f46e5;">
+            <i class="bi bi-cpu-fill fs-5"></i>
+            <h2 class="h6 fw-bold mb-0 text-dark">2. Specification Compiler</h2>
+          </div>
+          <p class="text-muted small mb-0">
+            <code>tableFromData({ inData, inSpec, inTable })</code> resolves <code>${columnName}</code> and <code>${rowValue}</code> placeholders into a deterministic JSON DOM tree.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="flow-card p-3 h-100">
+          <div class="d-flex align-items-center gap-2 mb-2 text-success">
+            <i class="bi bi-box-fill fs-5"></i>
+            <h2 class="h6 fw-bold mb-0 text-dark">3. Native DOM Rendering</h2>
+          </div>
+          <p class="text-muted small mb-0">
+            <code>buildSpecElement(spec)</code> imported from <strong>json-to-tag CDN</strong> constructs live native elements and appends them to the browser DOM.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Controls Bar -->
+    <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+      <div class="row align-items-center g-3">
+        <div class="col-lg-4 col-md-6">
+          <label for="dataset-select" class="form-label small fw-semibold text-muted mb-1">
+            <i class="bi bi-database me-1 text-primary"></i>Choose Dataset:
+          </label>
+          <select id="dataset-select" class="form-select form-select-sm">
+            <option value="precisionTools" selected>Precision Machine Tools (5 rows)</option>
+            <option value="employees">Engineering Team Directory (4 rows)</option>
+            <option value="cloudServers">Cloud Cluster Nodes (3 rows)</option>
+          </select>
+        </div>
+
+        <div class="col-lg-5 col-md-6">
+          <label class="form-label small fw-semibold text-muted mb-1">
+            <i class="bi bi-palette me-1 text-primary"></i>Table Theme &amp; Styling:
+          </label>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-sm btn-outline-secondary style-toggle active" id="toggle-striped" data-class="table-striped">Striped</button>
+            <button class="btn btn-sm btn-outline-secondary style-toggle active" id="toggle-hover" data-class="table-hover">Hover</button>
+            <button class="btn btn-sm btn-outline-secondary style-toggle active" id="toggle-border" data-class="border">Border</button>
+            <button class="btn btn-sm btn-outline-secondary style-toggle active" id="toggle-darkhead" data-class="table-dark">Dark Header</button>
+          </div>
+        </div>
+
+        <div class="col-lg-3 text-lg-end">
+          <button class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm" id="btn-add-row">
+            <i class="bi bi-plus-circle me-1"></i>Add Row Dynamically
+          </button>
+          <button class="btn btn-sm btn-outline-danger rounded-pill px-2 ms-1" id="btn-reset-data" title="Reset dataset">
+            <i class="bi bi-arrow-counterclockwise"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Workspace Tabs Card -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 bg-white">
+      <div class="card-header bg-white border-bottom p-3">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <ul class="nav nav-pills gap-1" id="mainTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active tab-btn" id="live-tab" data-bs-toggle="pill" data-bs-target="#live-pane" type="button" role="tab">
+                <i class="bi bi-display me-1"></i>Live Rendered Table
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link tab-btn" id="compiled-spec-tab" data-bs-toggle="pill" data-bs-target="#compiled-spec-pane" type="button" role="tab">
+                <i class="bi bi-file-earmark-code me-1"></i>Compiled Spec JSON
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link tab-btn" id="inputs-tab" data-bs-toggle="pill" data-bs-target="#inputs-pane" type="button" role="tab">
+                <i class="bi bi-sliders me-1"></i>Input Blueprints
+              </button>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center gap-2 small">
+            <span class="badge bg-light text-dark border" id="badge-columns-count">Columns: 5</span>
+            <span class="badge bg-light text-dark border" id="badge-rows-count">Rows: 5</span>
+            <span class="badge bg-light text-dark border" id="badge-nodes-count">Nodes: 35</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body p-4">
+        <div class="tab-content" id="mainTabContent">
+          <!-- Tab 1: Live Rendered DOM Table -->
+          <div class="tab-pane fade show active" id="live-pane" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h3 class="h6 fw-bold mb-0">Native DOM Table Generated via json-to-tag CDN</h3>
+                <span class="text-muted small">Target element: <code>#table-mount-point</code></span>
+              </div>
+              <span class="badge bg-success-subtle text-success border border-success-subtle">
+                <i class="bi bi-check-circle-fill me-1"></i>Live Native DOM
+              </span>
+            </div>
+
+            <div class="table-responsive rounded-3 overflow-hidden shadow-sm" id="table-mount-point">
+              <!-- Rendered table mounts here -->
+              <div class="text-center py-5 text-muted">
+                <div class="spinner-border text-primary mb-2" role="status"></div>
+                <div>Compiling table specification...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Compiled Spec JSON -->
+          <div class="tab-pane fade" id="compiled-spec-pane" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <span class="fw-semibold small">Direct output of <code>tableFromData({ inData, inSpec, inTable })</code>:</span>
+                <span class="text-muted small d-block">This tree conforms to the json-to-tag schema ready for DOM instantiation.</span>
+              </div>
+              <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="btn-copy-spec">
+                <i class="bi bi-clipboard me-1"></i>Copy JSON
+              </button>
+            </div>
+            <pre class="code-viewer p-3 mb-0" id="json-spec-display"></pre>
+          </div>
+
+          <!-- Tab 3: Inputs Blueprints -->
+          <div class="tab-pane fade" id="inputs-pane" role="tabpanel">
+            <ul class="nav nav-tabs mb-3" id="inputTabs" role="tablist">
+              <li class="nav-item">
+                <button class="nav-link active" id="in-data-tab" data-bs-toggle="tab" data-bs-target="#in-data-pane">
+                  1. data.json (Columns &amp; Rows)
+                </button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" id="in-spec-tab" data-bs-toggle="tab" data-bs-target="#in-spec-pane">
+                  2. spec.json (Cell Templates)
+                </button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" id="in-table-tab" data-bs-toggle="tab" data-bs-target="#in-table-pane">
+                  3. table.json (Scaffold)
+                </button>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="inputTabsContent">
+              <div class="tab-pane fade show active" id="in-data-pane">
+                <pre class="code-viewer p-3 mb-0" id="input-data-display"></pre>
+              </div>
+              <div class="tab-pane fade" id="in-spec-pane">
+                <pre class="code-viewer p-3 mb-0" id="input-spec-display"></pre>
+              </div>
+              <div class="tab-pane fade" id="in-table-pane">
+                <pre class="code-viewer p-3 mb-0" id="input-table-display"></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code Integration Guide -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+      <div class="d-flex align-items-center gap-2 mb-3">
+        <i class="bi bi-journal-code text-primary fs-5"></i>
+        <h2 class="h5 fw-bold mb-0">Minimal Quickstart Snippet</h2>
+      </div>
+      <p class="text-muted small">
+        Copy and paste this into any ES module project or CDN-powered web app:
+      </p>
+      <pre class="code-viewer p-3 mb-0"><code>&lt;!-- Load Bootstrap for styling --&gt;
+&lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"&gt;
+
+&lt;!-- Mount Point --&gt;
+&lt;div id="my-table" class="table-responsive"&gt;&lt;/div&gt;
+
+&lt;script type="module"&gt;
+  // 1. Import transformer function &amp; json-to-tag from CDN
+  import { tableFromData } from "https://cdn.jsdelivr.net/npm/json-transformer-funcs/src/index.js";
+  import buildSpecElement from "https://keshavsoft.github.io/json-to-tag/dist/v9/min.js";
+
+  // 2. Define data, cell blueprint, and table scaffold
+  const data = {
+    columns: [{ columnName: "Product" }, { columnName: "Price" }],
+    rows: [{ product: "Drill Bit", price: "$124.50" }]
+  };
+
+  const spec = {
+    buildHeader: { tagName: "th", textContent: "${columnName}" },
+    buildBody: {
+      outerTemplate: { tagName: "tr" },
+      innerTemplate: { tagName: "td", textContent: "${rowValue}" }
+    }
+  };
+
+  const table = {
+    tagName: "table",
+    attributes: { class: "table table-hover table-striped" },
+    children: [
+      { tagName: "thead", children: [{ tagName: "tr", children: [] }] },
+      { tagName: "tbody", children: [] }
+    ]
+  };
+
+  // 3. Compile Spec tree and render native DOM!
+  const compiledSpec = tableFromData({ inData: data, inSpec: spec, inTable: table });
+  const liveDom = buildSpecElement(compiledSpec);
+
+  document.getElementById("my-table").appendChild(liveDom);
+&lt;/script&gt;</code></pre>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-muted small py-3">
+      Developed by <a href="https://github.com/keshavsoft" target="_blank" class="text-decoration-none fw-semibold">KeshavSoft</a> &bull; MIT License
+    </footer>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Application Logic -->
+  <script type="module">
+    import { tableFromData } from "./src/index.js";
+    import buildSpecElement from "https://keshavsoft.github.io/json-to-tag/dist/v9/min.js";
+
+    // Predefined Datasets
+    const datasets = {
+      precisionTools: {
+        data: {
+          columns: [
+            { columnName: "SKU Code" },
+            { columnName: "Item Name" },
+            { columnName: "Category" },
+            { columnName: "Unit Price" },
+            { columnName: "Status" }
+          ],
+          rows: [
+            { code: "SKU-1001", name: "0.09 / 30mm Micro Drill Bit", category: "Precision Tooling", price: "$124.50", status: "In Stock" },
+            { code: "SKU-1002", name: "Carbide End Mill 4-Flute", category: "Cutting Tools", price: "$89.00", status: "In Stock" },
+            { code: "SKU-1003", name: "High-Torque NEMA Stepper Motor", category: "Motors & Actuators", price: "$215.75", status: "Low Stock" },
+            { code: "SKU-1004", name: "Precision Optical Proximity Sensor", category: "Sensors & Automation", price: "$64.20", status: "In Stock" },
+            { code: "SKU-1005", name: "Linear Motion Guide Rail 500mm", category: "Linear Hardware", price: "$340.00", status: "Backordered" }
+          ]
+        },
+        spec: {
+          buildHeader: {
+            tagName: "th",
+            textContent: "${columnName}",
+            attributes: { scope: "col", class: "px-4 py-3 text-start fw-semibold" }
+          },
+          buildBody: {
+            outerTemplate: {
+              tagName: "tr",
+              attributes: { class: "align-middle" }
+            },
+            innerTemplate: {
+              tagName: "td",
+              textContent: "${rowValue}",
+              attributes: { class: "px-4 py-3 text-secondary" }
+            }
+          }
+        },
+        table: {
+          tagName: "table",
+          attributes: {
+            class: "table table-hover table-striped align-middle border mb-0 bg-white"
+          },
+          children: [
+            {
+              tagName: "thead",
+              attributes: { class: "table-dark text-uppercase small" },
+              children: [{ tagName: "tr", children: [] }]
+            },
+            {
+              tagName: "tbody",
+              children: []
+            }
+          ]
+        }
+      },
+      employees: {
+        data: {
+          columns: [
+            { columnName: "Emp ID" },
+            { columnName: "Full Name" },
+            { columnName: "Department" },
+            { columnName: "Role" },
+            { columnName: "Location" }
+          ],
+          rows: [
+            { id: "EMP-01", name: "Keshav Nalam", dept: "Core Platform", role: "Chief Architect", loc: "Bengaluru" },
+            { id: "EMP-02", name: "Sarah Connor", dept: "Infrastructure", role: "Site Reliability Eng", loc: "Singapore" },
+            { id: "EMP-03", name: "Alex Chen", dept: "Frontend Eng", role: "UI/UX Specialist", loc: "San Francisco" },
+            { id: "EMP-04", name: "Ananya Iyer", dept: "Quality Assurance", role: "Automation Lead", loc: "Hyderabad" }
+          ]
+        },
+        spec: {
+          buildHeader: {
+            tagName: "th",
+            textContent: "${columnName}",
+            attributes: { class: "px-4 py-3 fw-bold bg-primary text-white" }
+          },
+          buildBody: {
+            outerTemplate: {
+              tagName: "tr",
+              attributes: { class: "align-middle" }
+            },
+            innerTemplate: {
+              tagName: "td",
+              textContent: "${rowValue}",
+              attributes: { class: "px-4 py-3" }
+            }
+          }
+        },
+        table: {
+          tagName: "table",
+          attributes: {
+            class: "table table-hover table-bordered align-middle mb-0 bg-white shadow-sm"
+          },
+          children: [
+            {
+              tagName: "thead",
+              attributes: { class: "table-primary" },
+              children: [{ tagName: "tr", children: [] }]
+            },
+            {
+              tagName: "tbody",
+              children: []
+            }
+          ]
+        }
+      },
+      cloudServers: {
+        data: {
+          columns: [
+            { columnName: "Node ID" },
+            { columnName: "Hostname" },
+            { columnName: "Region" },
+            { columnName: "CPU Load" },
+            { columnName: "Memory" }
+          ],
+          rows: [
+            { node: "srv-alpha-01", host: "api-prod-east.internal", region: "us-east-1", cpu: "28%", mem: "14.2 / 32 GB" },
+            { node: "srv-alpha-02", host: "db-replica-01.internal", region: "us-east-1", cpu: "64%", mem: "48.1 / 64 GB" },
+            { node: "srv-beta-01", host: "cache-redis-eu.internal", region: "eu-central-1", cpu: "12%", mem: "8.5 / 16 GB" }
+          ]
+        },
+        spec: {
+          buildHeader: {
+            tagName: "th",
+            textContent: "${columnName}",
+            attributes: { class: "px-4 py-3 font-monospace small" }
+          },
+          buildBody: {
+            outerTemplate: {
+              tagName: "tr",
+              attributes: { class: "align-middle" }
+            },
+            innerTemplate: {
+              tagName: "td",
+              textContent: "${rowValue}",
+              attributes: { class: "px-4 py-3 font-monospace small" }
+            }
+          }
+        },
+        table: {
+          tagName: "table",
+          attributes: {
+            class: "table table-hover table-striped align-middle mb-0 bg-white border"
+          },
+          children: [
+            {
+              tagName: "thead",
+              attributes: { class: "table-secondary" },
+              children: [{ tagName: "tr", children: [] }]
+            },
+            {
+              tagName: "tbody",
+              children: []
+            }
+          ]
+        }
+      }
+    };
+
+    // Current State
+    let currentKey = "precisionTools";
+    let activeState = structuredClone(datasets[currentKey]);
+    let compiledSpec = null;
+
+    // Helper to calculate total nodes in tree
+    function countNodes(node) {
+      if (!node) return 0;
+      let count = 1;
+      if (Array.isArray(node.children)) {
+        for (const child of node.children) {
+          count += countNodes(child);
+        }
+      }
+      return count;
+    }
+
+    // Main Compile & Render Pipeline
+    function compileAndRender() {
+      const startTime = performance.now();
+      const mount = document.getElementById("table-mount-point");
+      const specViewer = document.getElementById("json-spec-display");
+
+      try {
+        // Step 1: Execute transformer compiler
+        compiledSpec = tableFromData({
+          inData: activeState.data,
+          inSpec: activeState.spec,
+          inTable: activeState.table
+        });
+
+        // Step 2: Use json-to-tag CDN to create native DOM elements
+        const liveDomElement = buildSpecElement(compiledSpec);
+
+        // Step 3: Mount element into DOM
+        mount.innerHTML = "";
+        mount.appendChild(liveDomElement);
+
+        // Step 4: Update JSON inspector
+        specViewer.textContent = JSON.stringify(compiledSpec, null, 2);
+
+        // Update inputs inspector
+        document.getElementById("input-data-display").textContent = JSON.stringify(activeState.data, null, 2);
+        document.getElementById("input-spec-display").textContent = JSON.stringify(activeState.spec, null, 2);
+        document.getElementById("input-table-display").textContent = JSON.stringify(activeState.table, null, 2);
+
+        // Update Badges & Metrics
+        const duration = (performance.now() - startTime).toFixed(2);
+        document.getElementById("metric-render-time").textContent = `${duration} ms`;
+        document.getElementById("badge-columns-count").textContent = `Columns: ${activeState.data.columns.length}`;
+        document.getElementById("badge-rows-count").textContent = `Rows: ${activeState.data.rows.length}`;
+        document.getElementById("badge-nodes-count").textContent = `DOM Spec Nodes: ${countNodes(compiledSpec)}`;
+
+      } catch (err) {
+        console.error("Compilation / Render Error:", err);
+        mount.innerHTML = `
+          <div class="alert alert-danger m-3" role="alert">
+            <h6 class="alert-heading fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i> Render Error</h6>
+            <div>${err.message}</div>
+          </div>
+        `;
+      }
+    }
+
+    // Dataset Switcher
+    document.getElementById("dataset-select").addEventListener("change", (e) => {
+      currentKey = e.target.value;
+      activeState = structuredClone(datasets[currentKey]);
+      compileAndRender();
+    });
+
+    // Reset Data
+    document.getElementById("btn-reset-data").addEventListener("click", () => {
+      activeState = structuredClone(datasets[currentKey]);
+      compileAndRender();
+    });
+
+    // Add Dynamic Row
+    document.getElementById("btn-add-row").addEventListener("click", () => {
+      const rowCount = activeState.data.rows.length + 1;
+      if (currentKey === "precisionTools") {
+        activeState.data.rows.push({
+          code: `SKU-${1000 + rowCount}`,
+          name: `Custom Milling Insert Grade-${rowCount}`,
+          category: "Tooling",
+          price: `$${(45 + rowCount * 12).toFixed(2)}`,
+          status: "In Stock"
+        });
+      } else if (currentKey === "employees") {
+        activeState.data.rows.push({
+          id: `EMP-0${rowCount}`,
+          name: `Engineer-${rowCount}`,
+          dept: "Systems Engineering",
+          role: "Software Developer",
+          loc: "Remote"
+        });
+      } else {
+        activeState.data.rows.push({
+          node: `srv-dynamic-0${rowCount}`,
+          host: `worker-node-${rowCount}.internal`,
+          region: "ap-south-1",
+          cpu: `${15 + rowCount * 5}%`,
+          mem: `${rowCount * 4} / 32 GB`
+        });
+      }
+      compileAndRender();
+    });
+
+    // Style Toggles
+    document.querySelectorAll(".style-toggle").forEach(btn => {
+      btn.addEventListener("click", () => {
+        btn.classList.toggle("active");
+        const className = btn.dataset.class;
+        const currentClassStr = activeState.table.attributes.class || "";
+        let classList = currentClassStr.split(" ").filter(Boolean);
+
+        if (btn.classList.contains("active")) {
+          if (!classList.includes(className)) classList.push(className);
+        } else {
+          classList = classList.filter(c => c !== className);
+        }
+
+        activeState.table.attributes.class = classList.join(" ");
+
+        // also update thead class for darkhead
+        if (className === "table-dark") {
+          const thead = activeState.table.children.find(c => c.tagName === "thead");
+          if (thead) {
+            thead.attributes = thead.attributes || {};
+            thead.attributes.class = btn.classList.contains("active") ? "table-dark" : "table-light";
+          }
+        }
+
+        compileAndRender();
+      });
+    });
+
+    // Copy JSON Spec
+    document.getElementById("btn-copy-spec").addEventListener("click", async () => {
+      if (compiledSpec) {
+        await navigator.clipboard.writeText(JSON.stringify(compiledSpec, null, 2));
+        const btn = document.getElementById("btn-copy-spec");
+        btn.innerHTML = `<i class="bi bi-check2 me-1"></i>Copied!`;
+        setTimeout(() => {
+          btn.innerHTML = `<i class="bi bi-clipboard me-1"></i>Copy JSON`;
+        }, 2000);
+      }
+    });
+
+    // Initial Execution
+    compileAndRender();
+  </script>
+</body>
+</html>
