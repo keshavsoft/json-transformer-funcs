@@ -1,25 +1,12 @@
 {
     "tagName": "table",
     "attributes": {
-        "class": "table table-hover table-striped align-middle border mb-0 bg-white"
+        "class": "table table-hover table-striped align-middle border mb-0"
     },
     "children": [
         {
             "tagName": "colgroup",
-            "children": [
-                {
-                    "tagName": "col",
-                    "attributes": {
-                        "width": "80px"
-                    }
-                },
-                {
-                    "tagName": "col",
-                    "attributes": {
-                        "width": "400px"
-                    }
-                }
-            ]
+            "children": []
         },
         {
             "tagName": "thead",
