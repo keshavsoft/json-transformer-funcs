@@ -16,6 +16,7 @@
 | 📦 **npm Registry** | [npmjs.com/package/json-transformer-funcs](https://www.npmjs.com/package/json-transformer-funcs) | Install via npm |
 | 🐙 **GitHub Repository** | [github.com/keshavsoft/json-transformer-funcs](https://github.com/keshavsoft/json-transformer-funcs) | Source code, issues & releases |
 | 🌐 **GitHub Pages Docs** | [keshavsoft.github.io/json-transformer-funcs](https://keshavsoft.github.io/json-transformer-funcs/) | Live documentation website |
+| 🏷️ **DOM Renderer** | [github.com/keshavsoft/json-to-tag](https://github.com/keshavsoft/json-to-tag) | Companion library to render specs into live DOM |
 | 📖 **Internal Docs** | [docs/README.md](docs/README.md) | In-repo architectural reference |
 
 ---
@@ -37,7 +38,13 @@ Building a clean, flexible data table without mixing concerns requires three dis
                                    │
                                    ▼
                          Full Table JSON Tree
-                     (Ready for HTML / DOM render)
+                                   │
+                                   ▼
+                      json-to-tag (DOM Renderer)
+                      https://github.com/keshavsoft/json-to-tag
+                                   │
+                                   ▼
+                        Live HTML / DOM Table
 ```
 
 1. **`data.json` (Data)**: The raw tabular dataset containing `columns` and `rows`.
@@ -66,6 +73,29 @@ const fullTable = tableFromData({
 });
 
 console.log(JSON.stringify(fullTable, null, 2));
+```
+
+---
+
+## 🖥️ Rendering to the DOM (`json-to-tag`)
+
+`json-transformer-funcs` produces an abstract, pure JSON tag specification. 
+To render this specification into real browser DOM elements, use our companion library **[`json-to-tag`](https://github.com/keshavsoft/json-to-tag)**:
+
+```javascript
+import { tableFromData } from "json-transformer-funcs";
+import { jsonToTag } from "json-to-tag"; // https://github.com/keshavsoft/json-to-tag
+
+// 1. Compile data + templates into the table tag specification
+const tableSpec = tableFromData({
+  inData: data,
+  inSpec: spec,
+  inTable: table
+});
+
+// 2. Render directly to live DOM elements
+const tableElement = jsonToTag(tableSpec);
+document.getElementById("app").appendChild(tableElement);
 ```
 
 ---
@@ -201,6 +231,7 @@ The unified orchestrator that brings everything together into a single step:
 - 🌐 [GitHub Pages Documentation](https://keshavsoft.github.io/json-transformer-funcs/)
 - 📦 [npm Package](https://www.npmjs.com/package/json-transformer-funcs)
 - 🐙 [GitHub Repository](https://github.com/keshavsoft/json-transformer-funcs)
+- 🏷️ [json-to-tag (DOM Renderer)](https://github.com/keshavsoft/json-to-tag)
 - 🐛 [Issue Tracker](https://github.com/keshavsoft/json-transformer-funcs/issues)
 
 ---

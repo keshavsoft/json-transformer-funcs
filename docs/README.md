@@ -8,14 +8,15 @@ This library provides focused transformation functions for compiling structured 
 
 ---
 
-## 🔗 Navigation & Links
+## 🔗 Navigation & Ecosystem
 
-| Destination | Link |
-| :--- | :--- |
-| 🏠 **Main README** | [github.com/keshavsoft/json-transformer-funcs#readme](https://github.com/keshavsoft/json-transformer-funcs#readme) |
-| 📦 **npm Package** | [npmjs.com/package/json-transformer-funcs](https://www.npmjs.com/package/json-transformer-funcs) |
-| 🐙 **Source Code** | [github.com/keshavsoft/json-transformer-funcs](https://github.com/keshavsoft/json-transformer-funcs) |
-| 🐛 **Report Issues** | [github.com/keshavsoft/json-transformer-funcs/issues](https://github.com/keshavsoft/json-transformer-funcs/issues) |
+| Destination | Link | Description |
+| :--- | :--- | :--- |
+| 🏠 **Main README** | [github.com/keshavsoft/json-transformer-funcs#readme](https://github.com/keshavsoft/json-transformer-funcs#readme) | GitHub Overview & Quickstart |
+| 📦 **npm Package** | [npmjs.com/package/json-transformer-funcs](https://www.npmjs.com/package/json-transformer-funcs) | Official npm release |
+| 🐙 **Source Code** | [github.com/keshavsoft/json-transformer-funcs](https://github.com/keshavsoft/json-transformer-funcs) | GitHub repository |
+| 🏷️ **DOM Renderer** | [github.com/keshavsoft/json-to-tag](https://github.com/keshavsoft/json-to-tag) | Renders the compiled JSON spec into DOM nodes |
+| 🐛 **Report Issues** | [github.com/keshavsoft/json-transformer-funcs/issues](https://github.com/keshavsoft/json-transformer-funcs/issues) | GitHub issues |
 
 ---
 
@@ -30,9 +31,16 @@ This library provides focused transformation functions for compiling structured 
    - `${columnName}`: Extracted from column objects to populate header cells (`<th>`).
    - `${rowValue}`: Extracted from row objects to populate body cells (`<td>`).
 
-3. **Pure & Focused**:
-   - Zero runtime dependencies.
-   - Deterministic and composable.
+3. **End-to-End Pipeline**:
+   Pair with **[`json-to-tag`](https://github.com/keshavsoft/json-to-tag)** to directly mount generated tables into the browser DOM:
+   ```javascript
+   import { tableFromData } from "json-transformer-funcs";
+   import { jsonToTag } from "json-to-tag";
+
+   const spec = tableFromData({ inData, inSpec, inTable });
+   const element = jsonToTag(spec);
+   document.body.appendChild(element);
+   ```
 
 ---
 
