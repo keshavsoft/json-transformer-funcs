@@ -1,3 +1,8 @@
+import applyTemplate from "../applyTemplate.js";
+
+const buildCell = (inSource, inTemplate) =>
+    Object.values(inSource).map(value => applyTemplate(inTemplate, { rowValue: value }));
+
 const startFunc = (inSource, outerTemplate, innerTemplate) => {
     const localSource = inSource;
     const localOuterTemplate = outerTemplate;
@@ -5,32 +10,9 @@ const startFunc = (inSource, outerTemplate, innerTemplate) => {
 
     return localSource.map(element => {
         const loopInsideBuild = structuredClone(localOuterTemplate);
-
-        const loopInsideArray = buildCell({
-            inSource: element,
-            inTemplate: localInnerTemplate
-        });
-
-        loopInsideBuild.children = loopInsideArray;
-
+        loopInsideBuild.children = buildCell(element, localInnerTemplate);
         return loopInsideBuild;
     });
 };
 
-const buildCell = ({ inSource, inTemplate }) => {
-    const localSource = inSource;
-    const localTemplate = inTemplate;
-
-    let loopInsideArray = [];
-
-    for (const [rowKey, rowValue] of Object.entries(localSource)) {
-        const loopInsideBuild = structuredClone(localTemplate);
-        loopInsideBuild.textContent = loopInsideBuild.textContent.replace("${rowValue}", rowValue).replace("${}", rowValue);
-
-        loopInsideArray.push(loopInsideBuild);
-    };
-    // console.log("loopInsideArray : ", loopInsideArray);
-    return loopInsideArray;
-};
-
-export default startFunc;
+export default startFunc;

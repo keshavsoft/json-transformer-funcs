@@ -1,70 +1,45 @@
-import { tableFromData } from "../../src/index.js";
-import buildSpecElement from "https://keshavsoft.github.io/json-to-tag/dist/v9/min.js";
+import { collectionFromKey, collectionFromInternal } from "../../src/index.js";
 
-import data from "./data.json" with { type: "json" };
-import spec from "./spec.json" with { type: "json" };
-import table from "./table.json" with { type: "json" };
+import sampleData from "./sampleData.json" with { type: "json" };
+import sampleSpec from "./sampleSpec.json" with { type: "json" };
+import tableJson from "./table.json" with { type: "json" };
+import instructions from "./instuctions.json" with { type: "json" };
 
-const render = () => {
-  const startTime = performance.now();
-  const container = document.getElementById("table-container");
-  const specViewer = document.getElementById("spec-viewer");
-  const statsContainer = document.getElementById("render-stats");
+let tempTableJson = structuredClone(tableJson);
 
-  try {
-    // Step 1: Compile Data + Spec + Table scaffold into unified JSON Spec
-    const compiledTableSpec = tableFromData({
-      inData: data,
-      inSpec: spec,
-      inTable: table
-    });
+const setByPath = (object, path, value) => {
+    const keys = [...path];
+    const lastKey = keys.pop();
 
-    console.log("1. Compiled Table Spec (from json-transformer-funcs):", compiledTableSpec);
-
-    // Step 2: Use json-to-tag CDN engine to convert JSON Spec into live DOM
-    const liveDomTable = buildSpecElement(compiledTableSpec);
-
-    console.log("2. Live DOM Table (rendered by json-to-tag CDN):", liveDomTable);
-
-    // Step 3: Mount the native DOM element
-    if (container) {
-      container.innerHTML = "";
-      container.appendChild(liveDomTable);
-    }
-
-    // Optional: Render inspection views if containers exist
-    if (specViewer) {
-      specViewer.textContent = JSON.stringify(compiledTableSpec, null, 2);
-    }
-
-    const duration = (performance.now() - startTime).toFixed(2);
-    if (statsContainer) {
-      statsContainer.innerHTML = `
-        <span class="badge bg-success-subtle text-success border border-success-subtle me-2">
-          <i class="bi bi-check-circle me-1"></i>Rendered in ${duration}ms
-        </span>
-        <span class="badge bg-primary-subtle text-primary border border-primary-subtle me-2">
-          Columns: ${data.columns.length}
-        </span>
-        <span class="badge bg-info-subtle text-info border border-info-subtle">
-          Rows: ${data.rows.length}
-        </span>
-      `;
-    }
-  } catch (error) {
-    console.error("Render failed:", error);
-    if (container) {
-      container.innerHTML = `
-        <div class="alert alert-danger" role="alert">
-          <strong>Rendering Error:</strong> ${error.message}
-        </div>
-      `;
-    }
-  }
+    const target = keys.reduce((current, key) => current[key], object);
+    target[lastKey] = value;
 };
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", render);
-} else {
-  render();
-}
+instructions.forEach(instruction => {
+    let result;
+
+    if (instruction.func === "collectionFromKey") {
+        result = collectionFromKey(
+            sampleData[instruction.sourceKey],
+            sampleSpec[instruction.templateKey]
+        );
+    } else if (instruction.func === "collectionFromInternal") {
+        console.log("source:", sampleData[instruction.sourceKey]);
+        console.log("templateKey:", instruction.templateKey);
+        console.log("template:", sampleSpec[instruction.templateKey]);
+
+        const template = sampleSpec[instruction.templateKey];
+
+        result = collectionFromInternal(
+            sampleData[instruction.sourceKey],
+            template.outerTemplate,
+            template.innerTemplate
+        );
+    }
+
+    if (result) {
+        setByPath(tempTableJson, instruction.destinationPath, result);
+    }
+});
+
+console.log(JSON.stringify(tempTableJson, null, 2));
