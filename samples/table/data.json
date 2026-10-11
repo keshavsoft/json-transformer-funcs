@@ -1,0 +1,46 @@
+{
+  "columns": [
+    { "columnName": "Item Code" },
+    { "columnName": "Item Name" },
+    { "columnName": "Category" },
+    { "columnName": "Unit Price" },
+    { "columnName": "Availability" }
+  ],
+  "rows": [
+    {
+      "code": "SKU-1001",
+      "name": "0.09 / 30mm Micro Drill Bit",
+      "category": "Precision Tooling",
+      "price": "$124.50",
+      "availability": "In Stock"
+    },
+    {
+      "code": "SKU-1002",
+      "name": "Carbide End Mill 4-Flute",
+      "category": "Cutting Tools",
+      "price": "$89.00",
+      "availability": "In Stock"
+    },
+    {
+      "code": "SKU-1003",
+      "name": "High-Torque NEMA Stepper Motor",
+      "category": "Motors & Actuators",
+      "price": "$215.75",
+      "availability": "Low Stock"
+    },
+    {
+      "code": "SKU-1004",
+      "name": "Precision Optical Proximity Sensor",
+      "category": "Sensors & Automation",
+      "price": "$64.20",
+      "availability": "In Stock"
+    },
+    {
+      "code": "SKU-1005",
+      "name": "Linear Motion Guide Rail 500mm",
+      "category": "Linear Hardware",
+      "price": "$340.00",
+      "availability": "Backordered"
+    }
+  ]
+}

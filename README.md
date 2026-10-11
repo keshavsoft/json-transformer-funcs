@@ -17,6 +17,9 @@
 | 🐙 **GitHub Repository** | [github.com/keshavsoft/json-transformer-funcs](https://github.com/keshavsoft/json-transformer-funcs) | Source code, issues & releases |
 | 🌐 **GitHub Pages Docs** | [keshavsoft.github.io/json-transformer-funcs](https://keshavsoft.github.io/json-transformer-funcs/) | Live documentation website |
 | 🏷️ **DOM Renderer** | [github.com/keshavsoft/json-to-tag](https://github.com/keshavsoft/json-to-tag) | Companion library to render specs into live DOM |
+| 🟢 **Minimal Simple HTML** | [simple.html](simple.html) | Minimal 8-line example: reads 3 JSON files and renders via CDN |
+| 📊 **Interactive Samples** | [samples/README.md](samples/README.md) | Modular and standalone CDN samples |
+| ⚡ **Single-File CDN Demo** | [samples/cdn-standalone.html](samples/cdn-standalone.html) | Ready-to-run zero-build browser example |
 | 📖 **Internal Docs** | [docs/README.md](docs/README.md) | In-repo architectural reference |
 
 ---
@@ -224,6 +227,82 @@ The unified orchestrator that brings everything together into a single step:
   ]
 }
 ```
+
+---
+
+## 🌐 Live DOM Rendering with `json-to-tag` CDN
+
+Once `tableFromData()` compiles the unified JSON specification tree, you can immediately render it into native browser DOM elements using the **`json-to-tag` CDN engine**:
+
+### CDN Endpoints
+
+| Provider | URL | Type |
+| :--- | :--- | :--- |
+| **GitHub Pages CDN (Recommended)** | `https://keshavsoft.github.io/json-to-tag/dist/v9/min.js` | ES Module / Global |
+| **GitHub Pages (Latest Alias)** | `https://keshavsoft.github.io/json-to-tag/dist/min.js` | ES Module / Global |
+| **jsDelivr CDN** | `https://cdn.jsdelivr.net/npm/@keshavsoft/json-to-tag@1.9.3/docs/dist/v9/min.js` | ES Module |
+
+### Complete Browser Example
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Table Demo</title>
+  <!-- Bootstrap 5 for clean table styles -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4 bg-light">
+  <div class="container">
+    <div id="table-container" class="table-responsive"></div>
+  </div>
+
+  <script type="module">
+    // 1. Import json-transformer-funcs and json-to-tag CDN
+    import { tableFromData } from "./src/index.js";
+    import buildSpecElement from "https://keshavsoft.github.io/json-to-tag/dist/v9/min.js";
+
+    // 2. Tabular Data
+    const data = {
+      columns: [{ columnName: "Product" }, { columnName: "Price" }],
+      rows: [
+        { product: "Micro Drill Bit", price: "$124.50" },
+        { product: "End Mill 4-Flute", price: "$89.00" }
+      ]
+    };
+
+    // 3. Cell Blueprint
+    const spec = {
+      buildHeader: { tagName: "th", textContent: "${columnName}" },
+      buildBody: {
+        outerTemplate: { tagName: "tr" },
+        innerTemplate: { tagName: "td", textContent: "${rowValue}" }
+      }
+    };
+
+    // 4. Outer Scaffold
+    const table = {
+      tagName: "table",
+      attributes: { class: "table table-hover table-striped align-middle border bg-white" },
+      children: [
+        { tagName: "thead", attributes: { class: "table-dark" }, children: [{ tagName: "tr", children: [] }] },
+        { tagName: "tbody", children: [] }
+      ]
+    };
+
+    // 5. Compile Spec Tree
+    const compiledSpec = tableFromData({ inData: data, inSpec: spec, inTable: table });
+
+    // 6. Render Native DOM via json-to-tag CDN
+    const domTable = buildSpecElement(compiledSpec);
+    document.getElementById("table-container").appendChild(domTable);
+  </script>
+</body>
+</html>
+```
+
+Check out [`samples/README.md`](samples/README.md) and [`samples/cdn-standalone.html`](samples/cdn-standalone.html) for full ready-to-run examples!
 
 ---
 

@@ -68,5 +68,22 @@ This library provides focused transformation functions for compiling structured 
 
 ---
 
+## 🌐 Rendering with `json-to-tag` CDN
+
+The output of `tableFromData` is a standard JSON-to-tag specification object. Pass it directly to `buildSpecElement` loaded from the `json-to-tag` CDN:
+
+```javascript
+import { tableFromData } from "../src/index.js";
+import buildSpecElement from "https://keshavsoft.github.io/json-to-tag/dist/v9/min.js";
+
+const specTree = tableFromData({ inData, inSpec, inTable });
+const domElement = buildSpecElement(specTree);
+document.getElementById("table-container").appendChild(domElement);
+```
+
+For runnable examples and standalone files, see [../samples/README.md](../samples/README.md).
+
+---
+
 ## 📄 License
 MIT © [KeshavSoft](https://github.com/keshavsoft)

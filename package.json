@@ -9,6 +9,10 @@
     "src",
     "docs",
     "samples",
+    "simple.html",
+    "data.json",
+    "spec.json",
+    "table.json",
     "README.md"
   ],
   "directories": {
