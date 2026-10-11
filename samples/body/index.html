@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>json-transformer-funcs + json-to-tag CDN Sample</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8fafc;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    .header-gradient {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    }
+    .spec-box {
+      background-color: #0f172a;
+      color: #38bdf8;
+      max-height: 480px;
+      overflow-y: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.85rem;
+    }
+    .pipeline-step {
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      background: white;
+      padding: 1rem;
+      position: relative;
+    }
+  </style>
+</head>
+<body class="py-4">
+  <div class="container py-2">
+    <!-- Header -->
+    <header class="header-gradient text-white p-4 rounded-4 shadow-sm mb-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle mb-2">
+            Interactive Example
+          </span>
+          <h1 class="h3 fw-bold mb-1">json-transformer-funcs + json-to-tag CDN</h1>
+          <p class="text-white-50 mb-0 small">
+            Transforms raw tabular data into JSON-to-tag spec tree, then renders native DOM via <code>json-to-tag</code> CDN.
+          </p>
+        </div>
+        <div class="d-flex gap-2">
+          <span class="badge bg-secondary p-2">
+            <i class="bi bi-gear-fill me-1"></i>Compiler: json-transformer-funcs
+          </span>
+          <span class="badge bg-success p-2">
+            <i class="bi bi-cloud-arrow-down-fill me-1"></i>Renderer: json-to-tag CDN
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Pipeline Architecture -->
+    <section class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="pipeline-step shadow-sm h-100">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-primary rounded-circle p-2">1</span>
+            <h2 class="h6 fw-bold mb-0">Separate Inputs</h2>
+          </div>
+          <p class="text-muted small mb-0">
+            <code>data.json</code> (columns & rows), <code>spec.json</code> (cell templates), and <code>table.json</code> (scaffold).
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="pipeline-step shadow-sm h-100">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-info text-dark rounded-circle p-2">2</span>
+            <h2 class="h6 fw-bold mb-0">Compile with transformer</h2>
+          </div>
+          <p class="text-muted small mb-0">
+            <code>tableFromData({ inData, inSpec, inTable })</code> returns a clean DOM-specification JSON tree.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="pipeline-step shadow-sm h-100">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-success rounded-circle p-2">3</span>
+            <h2 class="h6 fw-bold mb-0">Render with json-to-tag CDN</h2>
+          </div>
+          <p class="text-muted small mb-0">
+            <code>buildSpecElement(spec)</code> from CDN transforms the spec into native DOM elements and mounts them.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Card -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+      <div class="card-header bg-white border-bottom p-3">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <ul class="nav nav-pills" id="sampleTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active fw-medium" id="rendered-tab" data-bs-toggle="pill" data-bs-target="#rendered-pane" type="button" role="tab">
+                <i class="bi bi-table me-1"></i>Rendered Live DOM
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link fw-medium" id="spec-tab" data-bs-toggle="pill" data-bs-target="#spec-pane" type="button" role="tab">
+                <i class="bi bi-code-slash me-1"></i>Compiled Spec JSON
+              </button>
+            </li>
+          </ul>
+          <div id="render-stats" class="d-flex align-items-center">
+            <span class="spinner-border spinner-border-sm text-secondary" role="status"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body p-4">
+        <div class="tab-content" id="sampleTabsContent">
+          <!-- Live Table Tab -->
+          <div class="tab-pane fade show active" id="rendered-pane" role="tabpanel">
+            <div class="table-responsive" id="table-container">
+              <div class="text-center py-5 text-muted">
+                <div class="spinner-border text-primary mb-2" role="status"></div>
+                <div>Compiling specification & rendering with json-to-tag CDN...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spec Viewer Tab -->
+          <div class="tab-pane fade" id="spec-pane" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="small text-muted">Generated by <code>json-transformer-funcs</code>:</span>
+              <button class="btn btn-sm btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('spec-viewer').textContent)">
+                <i class="bi bi-clipboard me-1"></i>Copy Spec JSON
+              </button>
+            </div>
+            <pre id="spec-viewer" class="spec-box p-3 rounded-3 mb-0"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code Walkthrough -->
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+      <h3 class="h6 fw-bold mb-3">
+        <i class="bi bi-file-earmark-code me-1 text-primary"></i>How This Example Works
+      </h3>
+      <pre class="bg-light p-3 rounded-3 text-dark small border mb-0"><code>// 1. Import transformer and json-to-tag from CDN
+import { tableFromData } from "json-transformer-funcs";
+import buildSpecElement from "https://keshavsoft.github.io/json-to-tag/dist/v9/min.js";
+
+// 2. Load the 3 distinct JSON inputs
+import data from "./data.json" with { type: "json" };
+import spec from "./spec.json" with { type: "json" };
+import table from "./table.json" with { type: "json" };
+
+// 3. Compile raw data & templates into full Table Spec Tree
+const compiledSpec = tableFromData({
+  inData: data,
+  inSpec: spec,
+  inTable: table
+});
+
+// 4. Render native HTML table DOM via json-to-tag CDN
+const domElement = buildSpecElement(compiledSpec);
+
+// 5. Mount into DOM container
+document.getElementById("table-container").appendChild(domElement);</code></pre>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

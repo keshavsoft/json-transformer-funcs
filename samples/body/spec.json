@@ -1,0 +1,25 @@
+{
+  "buildHeader": {
+    "tagName": "th",
+    "textContent": "${columnName}",
+    "attributes": {
+      "scope": "col",
+      "class": "px-4 py-3 text-start font-semibold border-bottom"
+    }
+  },
+  "buildBody": {
+    "outerTemplate": {
+      "tagName": "tr",
+      "attributes": {
+        "class": "table-row align-middle border-bottom"
+      }
+    },
+    "innerTemplate": {
+      "tagName": "td",
+      "textContent": "${rowValue}",
+      "attributes": {
+        "class": "px-4 py-3 text-sm text-secondary"
+      }
+    }
+  }
+}
