@@ -1,0 +1,14 @@
+[
+  {
+    "sourcePath": "children.0.children.0.children",
+    "function": "collectionFromKey",
+    "dataPath": "columns",
+    "templatePath": "buildHeader"
+  },
+  {
+    "sourcePath": "children.1.children",
+    "function": "collectionFromInternal",
+    "dataPath": "rows",
+    "templatePath": "buildBody"
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "name": "function-registry-table-v1-experiment",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test.js",
+    "start": "node index.js"
+  }
+}

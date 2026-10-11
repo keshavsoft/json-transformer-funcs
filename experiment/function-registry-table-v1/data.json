@@ -1,0 +1,13 @@
+{
+  "columns": [
+    { "columnName": "Item Code" },
+    { "columnName": "Item Name" },
+    { "columnName": "Category" },
+    { "columnName": "Unit Price" },
+    { "columnName": "Availability" }
+  ],
+  "rows": [
+    { "code": "SKU-1001", "name": "Micro Drill Bit", "category": "Precision Tooling", "price": "$124.50", "availability": "In Stock" },
+    { "code": "SKU-1002", "name": "Carbide End Mill", "category": "Cutting Tools", "price": "$89.00", "availability": "In Stock" }
+  ]
+}
