@@ -1,0 +1,63 @@
+{
+    "colGroup": [
+        {
+            "width": "80px"
+        },
+        {
+            "width": "400px"
+        },
+        {
+            "width": "150px"
+        },
+        {
+            "width": "120px"
+        }
+    ],
+    "columns": [
+        {
+            "columnName": "ID"
+        },
+        {
+            "columnName": "Full Name"
+        },
+        {
+            "columnName": "Department"
+        },
+        {
+            "columnName": "Role"
+        },
+        {
+            "columnName": "Status"
+        }
+    ],
+    "rows": [
+        {
+            "id": "101",
+            "name": "Keshav Nalam",
+            "dept": "Engineering",
+            "role": "Principal Architect",
+            "status": "Active"
+        },
+        {
+            "id": "102",
+            "name": "Sarah Connor",
+            "dept": "DevOps",
+            "role": "Cloud Specialist",
+            "status": "Active"
+        },
+        {
+            "id": "103",
+            "name": "Michael Chang",
+            "dept": "Product",
+            "role": "Tech Lead",
+            "status": "On Leave"
+        },
+        {
+            "id": "104",
+            "name": "Elena Rostova",
+            "dept": "Design",
+            "role": "UI/UX Designer",
+            "status": "Active"
+        }
+    ]
+}
