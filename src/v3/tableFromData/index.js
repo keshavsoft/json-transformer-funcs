@@ -1,10 +1,51 @@
 import collectionFromKey from "../collectionFromKey/index.js";
 import collectionFromInternal from "../collectionFromInternal/index.js";
 
-const startFunc = ({ inData, inSpec, inTable }) => {
+const defaultSpec = {
+    buildHeader: {
+        tagName: "th",
+        textContent: "${columnName}"
+    },
+    buildBody: {
+        outerTemplate: {
+            tagName: "tr"
+        },
+        innerTemplate: {
+            tagName: "td",
+            textContent: "${rowValue}"
+        }
+    }
+};
+
+const defaultTable = {
+    tagName: "table",
+    attributes: {
+        class: "table table-hover table-striped align-middle border mb-0"
+    },
+    children: [
+        {
+            tagName: "thead",
+            attributes: {
+                class: "table-dark"
+            },
+            children: [
+                {
+                    tagName: "tr",
+                    children: []
+                }
+            ]
+        },
+        {
+            tagName: "tbody",
+            children: []
+        }
+    ]
+};
+
+const startFunc = ({ inData, inSpec = defaultSpec, inTable = defaultTable }) => {
     const localData = inData;
-    const localSpec = inSpec;
-    const localTable = structuredClone(inTable);
+    const localSpec = inSpec || defaultSpec;
+    const localTable = structuredClone(inTable || defaultTable);
 
     const localHead = collectionFromKey(localData.columns, localSpec.buildHeader);
     const localBody = collectionFromInternal(
@@ -22,4 +63,5 @@ const startFunc = ({ inData, inSpec, inTable }) => {
     return localTable;
 };
 
+export { defaultSpec, defaultTable };
 export default startFunc;
