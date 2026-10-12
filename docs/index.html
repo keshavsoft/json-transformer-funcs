@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A small browser example using json-transformer-funcs v12.">
+  <title>json-transformer-funcs — v12 example</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #172033;
+      background: #f3f6fb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 48px 20px;
+      background: radial-gradient(circle at 12% 0%, #e5edff 0, transparent 34%), #f3f6fb;
+    }
+
+    main {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      padding: clamp(24px, 5vw, 44px);
+      border: 1px solid #e4eaf3;
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: 0 20px 60px #20345a12;
+    }
+
+    .eyebrow {
+      color: #5369d8;
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1 { margin: 12px 0 8px; font-size: clamp(28px, 5vw, 38px); letter-spacing: -.04em; }
+    .intro { margin: 0 0 28px; color: #61708a; line-height: 1.6; }
+
+    #table-mount { overflow-x: auto; }
+
+    .demo-table { width: 100%; border-collapse: collapse; text-align: left; }
+    .demo-table th { padding: 13px 16px; color: #52627a; background: #f6f8fc; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+    .demo-table td { padding: 15px 16px; border-top: 1px solid #edf0f5; }
+    .demo-table tbody tr:hover { background: #fafbff; }
+
+    .note { margin: 22px 0 0; color: #78859a; font-size: 13px; line-height: 1.6; }
+    .note code { color: #4d5fc4; }
+    .error { color: #a33a3a; }
+  </style>
+</head>
+<body>
+  <main>
+    <span class="eyebrow">Current implementation · src/v12</span>
+    <h1>Build a table from JSON</h1>
+    <p class="intro">Data and templates go in; a JSON tag tree comes out. A separate renderer turns that tree into this table.</p>
+    <div id="table-mount" aria-live="polite"></div>
+    <p class="note">The table tree is created by <code>tableFromData</code>. <code>json-to-tag</code> handles the browser DOM step.</p>
+  </main>
+
+  <script type="module">
+    import { tableFromData } from "../src/index.js";
+    import buildSpecElement from "https://keshavsoft.github.io/json-to-tag/dist/v9/min.js";
+
+    const inData = {
+      columns: [
+        { columnName: "Product" },
+        { columnName: "Price" }
+      ],
+      rows: [
+        { product: "Precision drill bit", price: "$12.50" },
+        { product: "Four-flute end mill", price: "$89.00" },
+        { product: "Linear guide rail", price: "$34.00" }
+      ]
+    };
+
+    const inSpec = {
+      buildHeader: {
+        tagName: "th",
+        textContent: "${columnName}",
+        attributes: { scope: "col" }
+      },
+      buildBody: {
+        outerTemplate: { tagName: "tr" },
+        innerTemplate: { tagName: "td", textContent: "${rowValue}" }
+      }
+    };
+
+    const inTable = {
+      tagName: "table",
+      attributes: { class: "demo-table" },
+      children: [
+        { tagName: "thead", children: [{ tagName: "tr", children: [] }] },
+        { tagName: "tbody", children: [] }
+      ]
+    };
+
+    const tree = tableFromData({ inData, inSpec, inTable });
+    const tableElement = buildSpecElement(tree);
+    document.querySelector("#table-mount").replaceChildren(tableElement);
+  </script>
+</body>
+</html>
