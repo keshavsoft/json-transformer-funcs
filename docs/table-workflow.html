@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A short walkthrough of how v12 table data and templates populate a JSON table scaffold before DOM rendering.">
+  <meta name="description" content="A v12 guide to the four table sample cases, their instruction files, and the path from table data to JSON tree to browser DOM.">
   <title>How a table is built · json-transformer-funcs</title>
   <style>
     :root {
@@ -14,40 +14,46 @@
     }
 
     * { box-sizing: border-box; }
-
-    body { min-height: 100vh; margin: 0; padding: 32px 18px; background: #f3f6fb; }
-    main { width: min(1060px, 100%); margin: 0 auto; }
+    body { min-height: 100vh; margin: 0; padding: 28px 16px; background: #f3f6fb; }
+    main { width: min(1080px, 100%); margin: 0 auto; }
     a { color: #4d5fc4; text-decoration: none; }
     a:hover { text-decoration: underline; }
-    .back { display: inline-block; margin: 0 0 22px; font-size: 13px; font-weight: 650; }
-
-    .hero, .card {
-      border: 1px solid #e3eaf3;
-      border-radius: 18px;
-      background: #fff;
-      box-shadow: 0 14px 42px #20345a0c;
-    }
-
+    code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+    code { color: #4d5fc4; }
+    .back { display: inline-block; margin: 0 0 18px; font-size: 13px; font-weight: 700; }
+    .hero, .panel { border: 1px solid #e3eaf3; border-radius: 18px; background: #fff; box-shadow: 0 14px 42px #20345a0c; }
     .hero { padding: clamp(24px, 5vw, 42px); }
     .eyebrow { color: #5369d8; font-size: 11px; font-weight: 750; letter-spacing: .13em; text-transform: uppercase; }
-    h1 { margin: 10px 0 8px; font-size: clamp(28px, 5vw, 40px); letter-spacing: -.045em; }
-    .lede { max-width: 720px; margin: 0; color: #61708a; line-height: 1.65; }
-
-    .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 18px 0 22px; }
-    .step { padding: 16px; border: 1px solid #e9edf5; border-radius: 14px; background: #fbfcff; }
-    .step-num { display: inline-grid; width: 24px; height: 24px; place-items: center; margin-bottom: 10px; border-radius: 8px; color: #465ac5; background: #edf0ff; font-size: 12px; font-weight: 750; }
-    .step h2 { margin: 0 0 5px; font-size: 14px; }
-    .step p { margin: 0; color: #69778e; font-size: 12px; line-height: 1.55; }
-
-    .source-note { padding: 16px 18px; border-left: 3px solid #6978d8; border-radius: 8px; color: #5f6d84; background: #f7f8ff; font-size: 13px; line-height: 1.6; }
-    .source-note code { color: #4d5fc4; }
-    .workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, .9fr); gap: 14px; margin-top: 18px; align-items: start; }
-    .card { padding: 20px; }
-    .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-    .card h2 { margin: 0; font-size: 16px; }
-    .card-head p { margin: 5px 0 0; color: #738097; font-size: 12px; line-height: 1.5; }
-    .tag { padding: 5px 8px; border-radius: 999px; color: #5364bd; background: #f0f2ff; font-size: 10px; font-weight: 750; white-space: nowrap; }
-
+    h1 { margin: 10px 0 8px; font-size: clamp(30px, 5vw, 42px); letter-spacing: -.045em; }
+    h2 { margin: 0 0 9px; font-size: 20px; letter-spacing: -.025em; }
+    h3 { margin: 0 0 6px; font-size: 15px; }
+    p { line-height: 1.65; }
+    .lede { max-width: 780px; margin: 0; color: #61708a; font-size: 16px; }
+    .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 22px; color: #46546d; font-size: 12px; font-weight: 700; }
+    .flow span { padding: 8px 10px; border: 1px solid #e7ebf4; border-radius: 9px; background: #f8f9ff; }
+    .flow b { color: #9aa5ba; }
+    .section { margin-top: 24px; }
+    .section-intro { margin: -2px 0 14px; color: #6b7890; font-size: 13px; }
+    .case-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .case { padding: 17px; border: 1px solid #e5eaf2; border-radius: 14px; background: #fff; }
+    .case-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 7px; }
+    .case p { margin: 0; color: #68768d; font-size: 13px; }
+    .case .state { display: inline-block; margin-top: 9px; color: #5364bd; font-size: 11px; font-weight: 750; }
+    .case .state.caution { color: #9a6821; }
+    .case-links { margin-top: 9px; font-size: 11px; }
+    .note { margin-top: 12px; padding: 13px 15px; border-left: 3px solid #6978d8; border-radius: 8px; color: #5f6d84; background: #f7f8ff; font-size: 12px; line-height: 1.6; }
+    .panel { padding: 21px; }
+    .two-col { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 14px; align-items: start; }
+    .instruction { overflow: auto; margin: 12px 0; padding: 14px; border: 1px solid #e8edf4; border-radius: 11px; color: #34415a; background: #fafbfe; font: 12px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre; }
+    .explain-list { display: grid; gap: 9px; margin: 12px 0 0; padding: 0; list-style: none; }
+    .explain-list li { padding-left: 12px; border-left: 2px solid #dce2ff; color: #68768d; font-size: 12px; line-height: 1.55; }
+    .explain-list strong { color: #35425b; }
+    .path { display: block; overflow-wrap: anywhere; margin-top: 5px; color: #4d5fc4; font: 11px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .code { overflow: auto; margin: 12px 0; padding: 15px; border-radius: 11px; color: #edf2ff; background: #1d2638; font: 12px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre; }
+    .subtle { margin: 8px 0 0; color: #728097; font-size: 12px; line-height: 1.6; }
+    .preview-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; margin-top: 14px; align-items: start; }
+    .preview { padding: 17px; border: 1px solid #e5eaf2; border-radius: 14px; background: #fff; }
+    .preview > p { margin: 0 0 12px; color: #748198; font-size: 12px; }
     #table-mount { overflow-x: auto; }
     .table { width: 100%; border-collapse: collapse; text-align: left; }
     .table th { padding: 11px 12px; color: #fff; background: #293653; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; }
@@ -55,89 +61,148 @@
     .table tbody tr:nth-child(even) { background: #f8faff; }
     .table tfoot td { padding: 9px 8px; background: #f5f7fb; }
     .table input { width: 100%; min-width: 75px; padding: 8px 9px; border: 1px solid #dfe5ef; border-radius: 7px; color: #36435a; background: #fff; font: inherit; font-size: 12px; }
+    details { border: 1px solid #e8edf4; border-radius: 10px; background: #fbfcfe; }
+    details + details { margin-top: 9px; }
+    summary { padding: 11px 12px; color: #3b4962; cursor: pointer; font-size: 12px; font-weight: 700; }
+    details pre { max-height: 410px; overflow: auto; margin: 0; padding: 0 12px 13px; color: #33415b; font: 10px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre; }
+    .loading { color: #78859a; font-size: 12px; line-height: 1.6; }
+    footer { padding: 18px 4px 4px; color: #7a879b; font-size: 12px; line-height: 1.6; }
 
-    details { border: 1px solid #e8edf4; border-radius: 11px; background: #fbfcfe; }
-    details + details { margin-top: 10px; }
-    summary { padding: 12px 13px; color: #3b4962; cursor: pointer; font-size: 12px; font-weight: 700; }
-    pre { max-height: 460px; overflow: auto; margin: 0; padding: 0 14px 14px; color: #33415b; font: 11px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre; }
-    .loading { color: #78859a; font-size: 13px; line-height: 1.6; }
-    footer { padding: 18px 4px 4px; color: #7a879b; font-size: 12px; }
-
-    @media (max-width: 760px) {
-      body { padding: 18px 12px; }
-      .steps, .workspace { grid-template-columns: 1fr; }
-      .step { padding: 14px; }
+    @media (max-width: 720px) {
+      body { padding: 16px 10px; }
+      .case-grid, .two-col, .preview-grid { grid-template-columns: 1fr; }
+      .panel { padding: 17px; }
     }
   </style>
 </head>
 <body>
   <main>
-    <a class="back" href="./index.html">← Back to the table example</a>
+    <a class="back" href="./index.html">← Back to the v12 overview</a>
 
     <header class="hero">
-      <span class="eyebrow">A v12 table walkthrough</span>
-      <h1>Build the table in pieces</h1>
-      <p class="lede">A table begins as a JSON scaffold with empty places for its columns, headings, rows, and footer. Data and templates fill those places. The finished JSON can be inspected on its own, then converted into browser DOM.</p>
+      <span class="eyebrow">The table story · src/v12</span>
+      <h1>From table data to browser DOM</h1>
+      <p class="lede">A table has a stable shape and changing content. This repo keeps those concerns in separate JSON pieces: data says what to show, templates say how repeated pieces look, a scaffold says where they belong, and a builder connects them. The finished JSON tree can be inspected before a renderer creates DOM elements.</p>
+      <div class="flow" aria-label="Table construction flow">
+        <span>data + templates</span><b>→</b><span>table scaffold</span><b>→</b><span>populated JSON tree</span><b>→</b><span>browser DOM</span>
+      </div>
     </header>
 
-    <section class="steps" aria-label="Table build steps">
-      <article class="step">
-        <span class="step-num">1</span>
-        <h2>Start with the table shape</h2>
-        <p><code>table.json</code> sets the order and nesting: colgroup, thead, tbody, and tfoot. Its child arrays are the insertion points.</p>
-      </article>
-      <article class="step">
-        <span class="step-num">2</span>
-        <h2>Supply data and templates</h2>
-        <p><code>sampleData.json</code> has column widths, column names, and records. <code>sampleSpec.json</code> describes how each repeated part looks.</p>
-      </article>
-      <article class="step">
-        <span class="step-num">3</span>
-        <h2>Inspect, then render</h2>
-        <p>v12 fills the scaffold and returns finished JSON. <code>json-to-tag</code> turns that same tree into the visible table.</p>
-      </article>
+    <section class="section" aria-labelledby="cases-heading">
+      <h2 id="cases-heading">Four sample cases</h2>
+      <p class="section-intro">These are four ways to explore table construction, not four finished table products. The nested <code>html/footer</code> folder is part of the browser integration case.</p>
+      <div class="case-grid">
+        <article class="case">
+          <div class="case-head"><h3><a href="../samples/tableTypes/v12/columns/index.js">columns</a></h3><code>column data → table parts</code></div>
+          <p>Is set up to use column definitions for column widths, header cells, and footer controls. It shows how one column list can feed several templates and destinations.</p>
+          <span class="state caution">Current fixture: header and footer paths miss the row index</span>
+          <p class="case-links"><a href="../samples/tableTypes/v12/columns/instuctions.json">instructions</a> · <a href="../samples/tableTypes/v12/columns/sampleData.json">data</a> · <a href="../samples/tableTypes/v12/columns/sampleSpec.json">templates</a></p>
+        </article>
+        <article class="case">
+          <div class="case-head"><h3><a href="../samples/tableTypes/v12/rows/index.js">rows</a></h3><code>records → repeated rows</code></div>
+          <p>Shows a data array mapped through one row template with <code>collectionFromKey</code>. The current <code>buildBody</code> template is only a <code>tr</code>, so each generated row has no cells. The helper registry includes <code>collectionFromInternal</code>, but this case's instruction does not select it.</p>
+          <span class="state caution">Current fixture: row repetition, without cell generation</span>
+          <p class="case-links"><a href="../samples/tableTypes/v12/rows/instuctions.json">instructions</a> · <a href="../samples/tableTypes/v12/rows/sampleData.json">data</a> · <a href="../samples/tableTypes/v12/rows/sampleSpec.json">templates</a></p>
+        </article>
+        <article class="case">
+          <div class="case-head"><h3><a href="../samples/tableTypes/v12/rows_good/index.js">rows_good</a></h3><code>several pieces → one scaffold</code></div>
+          <p>Has four instructions for colgroup, header, body, and footer. The destinations point into the intended scaffold arrays. Its body instruction still selects the bare <code>buildBody</code> row; the two-part cell template <code>buildBody1</code> is present but unused.</p>
+          <span class="state caution">Current fixture: all slots addressed; body cells still empty</span>
+          <p class="case-links"><a href="../samples/tableTypes/v12/rows_good/instuctions.json">instructions</a> · <a href="../samples/tableTypes/v12/rows_good/sampleSpec.json">templates</a></p>
+        </article>
+        <article class="case">
+          <div class="case-head"><h3><a href="../samples/tableTypes/v12/html/index.js">html</a></h3><code>JSON table → rendered page</code></div>
+          <p>Connects a table-building module to a browser page. <code>index.js</code> supplies columns and records, calls the nested footer builder, then passes its JSON tree to <code>json-to-tag</code>. The footer instructions fill the header and footer; this module leaves colgroup and body for other composition steps. The folder also has a larger <code>batches.json</code> dataset, which the current browser entry does not import.</p>
+          <span class="state">Integration case · includes the instruction-driven footer subcase</span>
+          <p class="case-links"><a href="../samples/tableTypes/v12/html/index.js">browser entry</a> · <a href="../samples/tableTypes/v12/html/footer/index.js">footer builder</a> · <a href="../samples/tableTypes/v12/html/footer/instuctions.json">footer instructions</a></p>
+        </article>
+      </div>
+      <aside class="note"><strong>Why keep the unfinished details visible?</strong> The sample names show the direction of each experiment, while the files show its current behavior. In particular, <code>rows_good</code> has useful table paths, but its selected body template does not yet produce cells. The complete preview below uses the same pieces and adds the row-to-cell helper explicitly.</aside>
     </section>
 
-    <aside class="source-note">
-      In <code>samples/tableTypes/v12/html/footer</code>, the instruction-driven footer module clones the scaffold and fills the header and footer paths. This walkthrough also fills the colgroup and body, so you can see the complete table come together from the same data, templates, and scaffold. Source files: <a href="../samples/tableTypes/v12/html/footer/sampleData.json">data</a>, <a href="../samples/tableTypes/v12/html/footer/sampleSpec.json">templates</a>, <a href="../samples/tableTypes/v12/html/footer/table.json">scaffold</a>, and <a href="../samples/tableTypes/v12/html/footer/instuctions.json">instructions</a>.
-    </aside>
-
-    <section class="workspace" aria-label="Finished JSON and rendered table">
-      <article class="card">
-        <div class="card-head">
-          <div>
-            <h2>Rendered table</h2>
-            <p>Header and footer controls come from the column list; body cells come from each record.</p>
-          </div>
-          <span class="tag">DOM preview</span>
+    <section class="section panel" aria-labelledby="instruction-heading">
+      <h2 id="instruction-heading">How an instruction connects the pieces</h2>
+      <p class="section-intro">An instruction is a small routing record. It does not contain the data or markup; it names which data, template, builder function, and destination to use.</p>
+      <div class="two-col">
+        <div>
+          <pre class="instruction">{
+  "sourceKey": "columns",
+  "templateKey": "buildHeader",
+  "func": "collectionFromKey",
+  "destinationPath": ["children", 1, "children", 0, "children"]
+}</pre>
+          <ul class="explain-list">
+            <li><strong>sourceKey</strong> selects <code>inData.columns</code>: the column names and other column properties.</li>
+            <li><strong>templateKey</strong> selects <code>sampleSpec.buildHeader</code>: the JSON tag shape with placeholders.</li>
+            <li><strong>func</strong> selects a named helper from the JavaScript function registry.</li>
+            <li><strong>destinationPath</strong> walks the cloned table tree and replaces the target child array.</li>
+          </ul>
         </div>
-        <div id="table-mount" aria-live="polite"><p class="loading">The preview loads when this page is served over HTTP. From the repo, run <code>npm run dev</code> and open <code>/docs/table-workflow.html</code>.</p></div>
-      </article>
-
-      <article class="card">
-        <div class="card-head">
-          <div>
-            <h2>Finished table JSON</h2>
-            <p>This is the output of the table-building step, before DOM rendering.</p>
-          </div>
-          <span class="tag">JSON tree</span>
+        <div>
+          <h3>Read the destination from the scaffold</h3>
+          <p class="subtle">In the sample <code>table.json</code>, the root's children are ordered as colgroup, thead, tbody, and tfoot.</p>
+          <span class="path">children[0] colgroup · children[1] thead · children[2] tbody · children[3] tfoot</span>
+          <p class="subtle">Starting at the table root, this path goes to its second child (<code>thead</code>), then its first child (the header <code>tr</code>), then that row's <code>children</code> array.</p>
+          <span class="path">table.children[1].children[0].children</span>
+          <p class="subtle">That array is where the generated <code>th</code> nodes go. The footer instruction uses the same column source and helper, but points to the <code>tfoot</code> row. The colgroup uses width data and a <code>col</code> template. The body uses records and a row/cell template.</p>
+          <p class="subtle">This is how the cases relate: each instruction fills one part of the same scaffold, and the table is complete when the required destinations have been populated.</p>
         </div>
-        <details open>
-          <summary>Inspect the populated scaffold</summary>
-          <pre id="tree-output">Waiting for the table modules…</pre>
-        </details>
-        <details>
-          <summary>See where each piece is inserted</summary>
-          <pre>table.children[0].children                 ← colGroup
-table.children[1].children[0].children     ← columns → header cells
-table.children[2].children                 ← data → rows and cells
-table.children[3].children[0].children     ← columns → footer controls</pre>
-        </details>
-      </article>
+      </div>
+    </section>
+
+    <section class="section panel" aria-labelledby="code-heading">
+      <h2 id="code-heading">What the JavaScript does with it</h2>
+      <p class="section-intro">The instruction loop resolves the names in JSON, calls a helper, then writes its result into a cloned table object.</p>
+      <pre class="code">const input = {
+  source: inData[instruction.sourceKey],
+  template: sampleSpec[instruction.templateKey]
+};
+
+const result = functionRegistry[instruction.func](input);
+setByPath(table, instruction.destinationPath, result);</pre>
+      <div class="two-col">
+        <div>
+          <h3>Repeat a template over columns</h3>
+          <p class="subtle"><code>collectionFromKey</code> maps over the source array. For each item it clones the template and replaces placeholders such as <code>${columnName}</code> in text, attributes, and nested children. The same column data can therefore build header labels and footer input names.</p>
+        </div>
+        <div>
+          <h3>Turn each record into cells</h3>
+          <p class="subtle"><code>collectionFromInternal</code> clones one outer row template per record, then creates an inner cell for each value in <code>Object.values(record)</code>. The cell template receives each value as <code>${rowValue}</code>; property order must match the displayed column order.</p>
+        </div>
+      </div>
+      <aside class="note"><code>tableFromData</code> is the direct v12 API for the common header-and-body case. It clones the scaffold, builds headers with <code>collectionFromKey</code>, builds rows with <code>collectionFromInternal</code>, and returns JSON. Colgroups, footers, or other custom pieces can be composed separately with the same helpers.</aside>
+    </section>
+
+    <section class="section" aria-labelledby="output-heading">
+      <h2 id="output-heading">Inspect JSON first, then render it</h2>
+      <p class="section-intro">The sample's instruction-driven footer builder fills two destinations. The complete preview adds colgroup and row/cell instructions, so you can see all four table parts together.</p>
+      <div class="preview-grid">
+        <article class="preview">
+          <h3>Browser DOM preview</h3>
+          <p>The renderer receives the finished JSON tree and creates the visible table.</p>
+          <div id="table-mount" aria-live="polite"><p class="loading">Serve the repo over HTTP to load the JavaScript modules and render this example.</p></div>
+        </article>
+        <article class="preview">
+          <h3>JSON outputs</h3>
+          <p>Open either view to compare the partial sample case with the completed composition.</p>
+          <details>
+            <summary>html/footer instructions applied to sampleData.json</summary>
+            <pre id="partial-tree">Loading table modules…</pre>
+          </details>
+          <details open>
+            <summary>Complete table JSON used by the preview</summary>
+            <pre id="tree-output">Loading table modules…</pre>
+          </details>
+          <details>
+            <summary>Extra instructions added for the complete preview</summary>
+            <pre id="instruction-output">Loading instructions…</pre>
+          </details>
+        </article>
+      </div>
     </section>
 
     <footer>
-      The transformer builds the JSON table description. Rendering is a separate step, so the finished tree can also be saved, inspected, or passed to another renderer.
+      The output is still data: tags, attributes, text, and children. A renderer such as <code>json-to-tag</code> performs the separate browser DOM step. For the public v12 API, see the <a href="./README.md">guide</a>; for the sample index, see <a href="../samples/README.md">samples/README.md</a>.
     </footer>
   </main>
 
@@ -147,20 +212,60 @@ table.children[3].children[0].children     ← columns → footer controls</pre>
     import sourceData from "../samples/tableTypes/v12/html/footer/sampleData.json" with { type: "json" };
     import templates from "../samples/tableTypes/v12/html/footer/sampleSpec.json" with { type: "json" };
     import tableScaffold from "../samples/tableTypes/v12/html/footer/table.json" with { type: "json" };
+    import footerInstructions from "../samples/tableTypes/v12/html/footer/instuctions.json" with { type: "json" };
 
-    const tree = structuredClone(tableScaffold);
+    const functionRegistry = {
+      collectionFromKey: ({ source, template }) => collectionFromKey(source, template),
+      collectionFromInternal: ({ source, template }) => collectionFromInternal(
+        source,
+        template.outerTemplate,
+        template.innerTemplate
+      )
+    };
 
-    tree.children[0].children = collectionFromKey(sourceData.colGroup, templates.buildColGroup);
-    tree.children[1].children[0].children = collectionFromKey(sourceData.columns, templates.buildHeader);
-    tree.children[2].children = collectionFromInternal(
-      sourceData.data,
-      templates.buildBody1.outerTemplate,
-      templates.buildBody1.innerTemplate
-    );
-    tree.children[3].children[0].children = collectionFromKey(sourceData.columns, templates.buildFooter);
+    const setByPath = (object, path, value) => {
+      const keys = [...path];
+      const lastKey = keys.pop();
+      const target = keys.reduce((current, key) => current[key], object);
+      target[lastKey] = value;
+    };
 
-    document.querySelector("#tree-output").textContent = JSON.stringify(tree, null, 2);
-    document.querySelector("#table-mount").replaceChildren(buildSpecElement(tree));
+    const buildFromInstructions = instructions => {
+      const table = structuredClone(tableScaffold);
+      instructions.forEach(instruction => {
+        const input = {
+          source: sourceData[instruction.sourceKey],
+          template: templates[instruction.templateKey]
+        };
+        const result = functionRegistry[instruction.func](input);
+        setByPath(table, instruction.destinationPath, result);
+      });
+      return table;
+    };
+
+    const completeInstructions = [
+      {
+        sourceKey: "colGroup",
+        templateKey: "buildColGroup",
+        func: "collectionFromKey",
+        destinationPath: ["children", 0, "children"]
+      },
+      ...footerInstructions,
+      {
+        sourceKey: "data",
+        templateKey: "buildBody1",
+        func: "collectionFromInternal",
+        destinationPath: ["children", 2, "children"]
+      }
+    ];
+
+    const partialTree = buildFromInstructions(footerInstructions);
+    const completeTree = buildFromInstructions(completeInstructions);
+
+    document.querySelector("#partial-tree").textContent = JSON.stringify(partialTree, null, 2);
+    document.querySelector("#tree-output").textContent = JSON.stringify(completeTree, null, 2);
+    document.querySelector("#instruction-output").textContent = JSON.stringify(completeInstructions, null, 2);
+    document.querySelector("#table-mount").replaceChildren(buildSpecElement(completeTree));
   </script>
 </body>
 </html>

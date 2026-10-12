@@ -271,4 +271,6 @@ For a small working browser example using the repository's v12 entry, open [`ind
 
 ## Samples
 
-See the [v12 sample map](../samples/README.md) for the examples under `samples/tableTypes/v12`.
+There are four top-level v12 sample cases: `columns`, `rows`, `rows_good`, and `html`. They show column-driven parts, row repetition, instruction-based assembly, and the browser rendering step. Some fixtures are exploratory rather than complete: the `columns` header/footer paths miss the row index, while the row cases select a plain `<tr>` template and therefore leave generated rows without cells. The nested `html/footer` case fills header and footer slots; it does not fill the colgroup or body.
+
+The [table walkthrough](table-workflow.html) explains how each instruction ties a data key, template key, registered helper, and scaffold path together. It also shows the footer sample's actual partial JSON output next to a complete table composition and its rendered DOM. See the [v12 sample map](../samples/README.md) for links to every case.
