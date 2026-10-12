@@ -1,12 +1,4 @@
 {
-    "colGroup": [
-        {
-            "width": "80px"
-        },
-        {
-            "width": "400px"
-        }
-    ],
     "columns": [
         {
             "columnName": "ID"
@@ -19,14 +11,6 @@
         {
             "id": "101",
             "name": "Keshav Nalam"
-        },
-        {
-            "id": "102",
-            "name": "Sarah Connor"
-        },
-        {
-            "id": "103",
-            "name": "Michael Chang"
         }
     ]
 }
