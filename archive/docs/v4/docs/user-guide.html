@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Use the table builder · json-transformer-funcs</title>
+<style>
+:root{color-scheme:light;--ink:#17233b;--muted:#566780;--line:#dce4f2;--blue:#435fe2;--paper:#fff;--back:#f2f5fb;--code:#f5f7fc}*{box-sizing:border-box}body{margin:0;background:var(--back);color:var(--ink);font:16px/1.7 system-ui,sans-serif}main{width:min(920px,calc(100% - 36px));margin:42px auto 72px}header,section{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:clamp(24px,5vw,48px);margin-bottom:18px}.eyebrow{color:var(--blue);font-size:.78rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase}h1{margin:10px 0 12px;font-size:clamp(2.2rem,6vw,3.5rem);line-height:1.08;letter-spacing:-.045em}h2{margin:0 0 12px;font-size:1.45rem}p,li{color:var(--muted)}p{margin:8px 0 14px}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}pre{overflow:auto;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--code);color:#263653;font-size:.9rem;line-height:1.55}.flow{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-top:22px}.flow span{padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:#f8f9ff;color:#30466b;font-weight:700}.flow b{color:#8998bb}.note{border-left:4px solid var(--blue);padding:10px 14px;background:#f7f8ff}@media(max-width:620px){.flow{align-items:flex-start}.flow b{display:none}}
+</style>
+</head>
+<body><main>
+<header><div class="eyebrow">User guide · current package API</div><h1>Build a table from your data</h1><p>Give the library column definitions, row records, and optional JSON templates and table structure. It returns a JSON description of a table. A separate renderer can turn that description into browser elements.</p><div class="flow" aria-label="Data and templates become JSON, then optionally DOM"><span>columns + rows</span><b>→</b><span>tableFromData</span><b>→</b><span>JSON table</span><b>→</b><span>optional renderer</span></div></header>
+<section><h2>Quick start</h2><p>Install the package and pass an object containing <code>columns</code> and <code>rows</code>. The defaults create a header row and body cells.</p><pre><code>npm install json-transformer-funcs</code></pre><pre><code>import { tableFromData } from "json-transformer-funcs";
+const inData = {
+  columns: [
+    { columnName: "Item" },
+    { columnName: "Price" }
+  ],
+  rows: [
+    { item: "Notebook", price: "$4.50" },
+    { item: "Pen", price: "$1.25" }
+  ]
+};
+const tableTree = tableFromData({ inData });
+console.log(tableTree);</code></pre><p>The returned value is plain data: a <code>table</code> object containing <code>thead</code> and <code>tbody</code> descriptions. It is not an HTML element.</p></section>
+<section><h2>What the inputs mean</h2><ul><li><strong>Columns</strong> provide the contexts used to build header cells. By default, each column needs a <code>columnName</code>.</li><li><strong>Rows</strong> provide cell values. The default builder reads each row's values in JavaScript property order and creates one cell per value.</li><li><strong>Templates</strong> describe the JSON tag objects used for headers, rows, and cells. Supply a custom specification with <code>inSpec</code>.</li><li><strong>Table structure</strong> describes the outer tags and attributes. Supply a custom scaffold with <code>inTable</code>.</li></ul><p class="note">Keep each row's value order aligned with the displayed columns. The current body builder does not match row properties to column names.</p></section>
+<section><h2>Choose the output you need</h2><p>Use the JSON tree directly when you want to inspect, store, or further transform the table description. To display it, pass it to a renderer that understands the project's JSON tag shape.</p><pre><code>const tableTree = tableFromData({ inData });
+// After loading a renderer such as json-to-tag:
+const tableElement = window.ks.jsonToTag.buildSpecElement(tableTree);
+document.querySelector("#table-host").appendChild(tableElement);</code></pre><p>The renderer is a separate step and dependency. <code>json-transformer-funcs</code> does not create or append DOM elements.</p></section>
+<section><h2>Current shape requirements</h2><ul><li>A custom table scaffold needs direct <code>thead</code> and <code>tbody</code> children.</li><li>The <code>thead</code> needs a first row where generated headers can be placed.</li><li>The builder fills the header and body. Other scaffold sections, such as <code>colgroup</code> or <code>tfoot</code>, are kept but not populated by <code>tableFromData</code>.</li><li>Template strings can contain placeholders such as <code>&#36;{columnName}</code>. Matching placeholders are replaced in text and attribute values.</li></ul></section>
+</main></body></html>

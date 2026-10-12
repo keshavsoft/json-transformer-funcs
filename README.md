@@ -84,9 +84,7 @@ import {
 ## v12 source and examples
 
 - Public implementation: [`src/v12`](src/v12)
-- End-user guide and live preview: [`docs/index.html`](docs/index.html)
-- Contributor guide: [`docs/developer-guide.html`](docs/developer-guide.html)
-- Architecture guide: [`docs/architecture.html`](docs/architecture.html)
+- Three separate HTML guides, linked from [`docs/index.html`](docs/index.html)
 - Detailed API reference: [`docs/README.md`](docs/README.md)
 - v12 sample map: [`samples/README.md`](samples/README.md)
 

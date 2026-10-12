@@ -14,6 +14,16 @@
     {
         "destinationPath": [
             "children",
+            2,
+            "children"
+        ],
+        "sourceKey": "data",
+        "templateKey": "buildBody",
+        "func": "collectionFromKey"
+    },
+    {
+        "destinationPath": [
+            "children",
             3,
             "children",
             0,

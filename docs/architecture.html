@@ -1,198 +1,27 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Architecture of the v12 JSON table builder: inputs, templates, scaffold, composition helpers, instruction records, and renderer boundary.">
-  <title>Architecture · json-transformer-funcs</title>
-  <style>
-    :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #172033; background: #f3f6fb; }
-    * { box-sizing: border-box; }
-    body { margin: 0; padding: 26px 16px; }
-    main { width: min(1060px, 100%); margin: 0 auto; }
-    a { color: #4d5fc4; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
-    code { color: #4d5fc4; }
-    nav { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 18px; font-size: 12px; font-weight: 700; }
-    .hero, .panel { border: 1px solid #e3eaf3; border-radius: 18px; background: #fff; box-shadow: 0 14px 42px #20345a0c; }
-    .hero { padding: clamp(24px, 5vw, 40px); }
-    .eyebrow { color: #5369d8; font-size: 11px; font-weight: 750; letter-spacing: .13em; text-transform: uppercase; }
-    h1 { margin: 10px 0 8px; font-size: clamp(30px, 5vw, 42px); letter-spacing: -.045em; }
-    h2 { margin: 0 0 9px; font-size: 19px; letter-spacing: -.025em; }
-    h3 { margin: 0 0 6px; font-size: 14px; }
-    p { line-height: 1.6; }
-    .lede { max-width: 800px; margin: 0; color: #61708a; font-size: 15px; }
-    .flow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 21px; }
-    .flow div { min-height: 64px; display: grid; align-content: center; padding: 11px; border: 1px solid #e5eaf3; border-radius: 10px; background: #f8f9ff; text-align: center; color: #46546d; font-size: 11px; font-weight: 700; }
-    .flow span { display: block; margin-top: 3px; color: #7b879d; font-size: 10px; font-weight: 500; }
-    .section { margin-top: 20px; }
-    .panel { padding: 19px; }
-    .intro { margin: -2px 0 13px; color: #6b7890; font-size: 13px; }
-    .split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: start; }
-    .card { padding: 15px; border: 1px solid #e5eaf2; border-radius: 12px; background: #fbfcff; }
-    .card p { margin: 0; color: #68768d; font-size: 12px; }
-    pre { overflow: auto; margin: 10px 0 0; padding: 14px; border-radius: 10px; color: #edf2ff; background: #1d2638; font-size: 11px; line-height: 1.6; }
-    .route { display: block; overflow-wrap: anywhere; padding: 10px 12px; border-radius: 9px; color: #4555b2; background: #f1f3ff; font: 11px/1.6 ui-monospace, SFMono-Regular, Consolas, monospace; }
-    table { width: 100%; border-collapse: collapse; font-size: 11px; }
-    th, td { padding: 9px; border-bottom: 1px solid #e9edf4; text-align: left; vertical-align: top; }
-    th { color: #47556e; background: #f8f9fd; }
-    td { color: #66758d; line-height: 1.5; }
-    .note { margin-top: 12px; padding: 13px 15px; border-left: 3px solid #6978d8; border-radius: 8px; color: #5f6d84; background: #f7f8ff; font-size: 12px; line-height: 1.6; }
-    footer { padding: 18px 3px 4px; color: #7a879b; font-size: 12px; line-height: 1.6; }
-    @media (max-width: 720px) { body { padding: 16px 10px; } .flow { grid-template-columns: 1fr 1fr; } .split { grid-template-columns: 1fr; } .panel { padding: 16px; } }
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architecture · json-transformer-funcs</title>
+<style>
+:root{color-scheme:light;--ink:#17233b;--muted:#566780;--line:#dce4f2;--blue:#435fe2;--paper:#fff;--back:#f2f5fb;--code:#f5f7fc}*{box-sizing:border-box}body{margin:0;background:var(--back);color:var(--ink);font:16px/1.7 system-ui,sans-serif}main{width:min(980px,calc(100% - 36px));margin:42px auto 72px}header,section{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:clamp(24px,5vw,46px);margin-bottom:18px}.eyebrow{color:var(--blue);font-size:.78rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase}h1{margin:10px 0 12px;font-size:clamp(2.2rem,6vw,3.4rem);line-height:1.08;letter-spacing:-.045em}h2{margin:0 0 12px;font-size:1.4rem}p,li{color:var(--muted)}p{margin:8px 0 14px}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}pre{overflow:auto;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:var(--code);color:#263653}a{color:var(--blue);text-underline-offset:3px}.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:22px 0 4px}.node{min-height:82px;display:grid;place-content:center;padding:12px;border:1px solid var(--line);border-radius:12px;background:#f8f9ff;text-align:center;font-weight:750;color:#30466b}.node small{display:block;color:var(--muted);font-weight:500}table{width:100%;border-collapse:collapse}th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:var(--ink)}td{color:var(--muted)}@media(max-width:760px){.flow{grid-template-columns:1fr}.node{min-height:58px}}@media(max-width:640px){table{display:block;overflow-x:auto}}
+</style>
 </head>
-<body>
-  <main>
-    <nav aria-label="Documentation audiences">
-      <a href="./index.html">User guide</a>
-      <a href="./developer-guide.html">Contributor guide</a>
-      <a href="./README.md">API reference</a>
-    </nav>
-
-    <header class="hero">
-      <span class="eyebrow">Architecture guide · src/v12</span>
-      <h1>Compose a table as data</h1>
-      <p class="lede">The architecture separates table content, repeated tag shapes, and the table's outer structure. A builder combines them into a JSON tag tree. A renderer can then turn that description into browser DOM.</p>
-      <div class="flow" aria-label="Architecture flow">
-        <div>Data<span>columns + row records</span></div>
-        <div>Templates<span>reusable tag descriptions</span></div>
-        <div>Builder<span>clone, fill, and place</span></div>
-        <div>JSON tree<span>inspectable output</span></div>
-        <div>Renderer<span>optional DOM step</span></div>
-      </div>
-    </header>
-
-    <section class="section panel" aria-labelledby="paths-heading">
-      <h2 id="paths-heading">Two composition paths</h2>
-      <p class="intro">The public API is the direct route for a conventional header and body. The samples show how to compose additional pieces such as colgroups and footers.</p>
-      <div class="split">
-        <article class="card">
-          <h3>Direct API: <code>tableFromData</code></h3>
-          <p>Reads <code>inData.columns</code> and <code>inData.rows</code>, uses header and body templates, clones the scaffold, and fills the first header row plus the body. This is the normal public entry point.</p>
-          <span class="route" style="margin-top:10px">columns + rows + spec + scaffold → tableFromData → JSON tree</span>
-        </article>
-        <article class="card">
-          <h3>Stepwise composition: collection helpers</h3>
-          <p>Calls helpers for the desired repeated parts and assigns each result into a scaffold path. The sample JavaScript interprets instruction records to select the inputs, helper, and destination.</p>
-          <span class="route" style="margin-top:10px">source key + template key + helper + path → one table part</span>
-        </article>
-      </div>
-      <aside class="note"><code>instuctions.json</code> belongs to the sample composition pattern; <code>tableFromData</code> does not load or interpret that file. The sample's <code>index.js</code> implements the small instruction loop.</aside>
-    </section>
-
-    <section class="section panel" aria-labelledby="model-heading">
-      <h2 id="model-heading">The table model</h2>
-      <p class="intro">The scaffold defines the stable places in the output. The data and templates provide arrays of nodes to insert at those places.</p>
-      <div class="split">
-        <div>
-          <h3>Scaffold child slots in the full sample</h3>
-          <span class="route">table.children[0] → colgroup<br>table.children[1] → thead → first tr<br>table.children[2] → tbody<br>table.children[3] → tfoot → first tr</span>
-          <p class="intro" style="margin-top:10px">The default v12 scaffold is smaller: it has a <code>thead</code> and a <code>tbody</code>. Custom structures need to provide the nodes required by the operation being used.</p>
-        </div>
-        <div>
-          <h3>What each input owns</h3>
-          <ul style="margin:0;padding-left:18px;color:#68768d;font-size:12px;line-height:1.7">
-            <li>Data owns values and their order.</li>
-            <li>Templates own tags, attributes, text, and nested children.</li>
-            <li>The scaffold owns outer table structure and styling.</li>
-            <li>The builder owns cloning and insertion.</li>
-            <li>The renderer owns DOM creation and mounting.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="section panel" aria-labelledby="instruction-heading">
-      <h2 id="instruction-heading">Instruction records are routing metadata</h2>
-      <p class="intro">An instruction connects the pieces by naming them. The JSON record stays declarative; the registered JavaScript helper does the work.</p>
-      <div class="split">
-        <pre>{
+<body><main>
+<header><div class="eyebrow">Architecture guide · src/v12</div><h1>How the table tree is assembled</h1><p>v12 separates table values, reusable tag templates, and the outer table scaffold. The builder combines them into inspectable JSON. A renderer is a later, separate step.</p><div class="flow" aria-label="v12 table construction flow"><div class="node">Data<small>columns and row records</small></div><div class="node">Templates<small>reusable tag descriptions</small></div><div class="node">Builder<small>clone, fill, place</small></div><div class="node">JSON tree<small>inspectable output</small></div><div class="node">Renderer<small>optional DOM step</small></div></div></header>
+<section><h2>Public table-building path</h2><p>The package entry <a href="../src/index.js"><code>src/index.js</code></a> re-exports <a href="../src/v12/index.js"><code>src/v12/index.js</code></a>. Its main function is <a href="../src/v12/tableFromData/index.js"><code>tableFromData</code></a> (also exported as <code>buildTable</code>).</p><ol><li>It takes <code>inData</code>, optional <code>inSpec</code>, and optional <code>inTable</code>. Missing specification and scaffold values use exported defaults.</li><li><a href="../src/v12/collectionFromKey/index.js"><code>collectionFromKey</code></a> maps column contexts through the header template.</li><li><a href="../src/v12/collectionFromInternal/index.js"><code>collectionFromInternal</code></a> maps records to rows. It uses <code>Object.values(row)</code>, passes each value as <code>{ rowValue }</code>, and fills the row template's children with generated cells.</li><li><code>tableFromData</code> clones the scaffold, finds direct <code>thead</code> and <code>tbody</code> children, assigns generated headers to the first header row, and replaces the body's children with generated rows.</li></ol><p>This implementation populates the header and body insertion points. A scaffold may contain other elements, but this function does not populate a <code>colgroup</code> or <code>tfoot</code>.</p></section>
+<section><h2>Template application</h2><p><a href="../src/v12/applyTemplate/index.js"><code>applyTemplate</code></a> clones a template with <code>structuredClone</code>. It walks supported content: string values, <code>textContent</code>, attribute values, and child nodes. <a href="../src/v12/applyTemplate/commonReplace.js"><code>commonReplace</code></a> substitutes every <code>&#36;{name}</code> token matching <code>\w+</code> in a string. A missing property leaves its token unchanged.</p><p>Template application produces JSON objects; it does not call DOM APIs. The consumer chooses whether to inspect the JSON or pass it to a renderer.</p></section>
+<section><h2>Sample instruction path</h2><p>The samples also explore a configurable composition pattern. An instruction connects a data key, a template key, a registered helper, and a destination path in a cloned table scaffold:</p><pre><code>{
   "sourceKey": "columns",
   "templateKey": "buildHeader",
   "func": "collectionFromKey",
-  "destinationPath": [
-    "children", 1, "children", 0, "children"
-  ]
-}</pre>
-        <div>
-          <p class="intro"><strong>Resolve:</strong> read <code>inData[sourceKey]</code> and <code>sampleSpec[templateKey]</code>.</p>
-          <p class="intro"><strong>Build:</strong> look up <code>func</code> in a local registry and call it with the chosen source and template.</p>
-          <p class="intro"><strong>Place:</strong> walk <code>destinationPath</code> on a cloned scaffold and replace the target child array with the generated nodes.</p>
-          <span class="route">table.children[1].children[0].children → header cells</span>
-        </div>
-      </div>
-      <pre>const input = {
-  source: inData[instruction.sourceKey],
-  template: sampleSpec[instruction.templateKey]
-};
-const nodes = functionRegistry[instruction.func](input);
-setByPath(table, instruction.destinationPath, nodes);
-</pre>
-    </section>
-
-    <section class="section panel" aria-labelledby="helpers-heading">
-      <h2 id="helpers-heading">What the v12 helpers do</h2>
-      <div class="split">
-        <article class="card">
-          <h3><code>collectionFromKey</code></h3>
-          <p>Maps a template over an array. For each item, it clones the template and applies placeholders using that item as the context. It suits headers, columns, controls, and other one-item-to-one-node collections.</p>
-        </article>
-        <article class="card">
-          <h3><code>collectionFromInternal</code></h3>
-          <p>Maps records to outer nodes, then maps each record's <code>Object.values</code> to inner nodes. The row value order must match the intended cell order; it does not look up values by column name.</p>
-        </article>
-      </div>
-      <div class="split" style="margin-top:12px">
-        <article class="card">
-          <h3>Template application</h3>
-          <p>Templates are cloned with <code>structuredClone</code>. Placeholder strings are replaced recursively in string values, text, attributes, and children. Current token names match <code>\w+</code>; missing properties leave the token unchanged.</p>
-        </article>
-        <article class="card">
-          <h3>Renderer boundary</h3>
-          <p>The package returns ordinary JSON-compatible data. It does not know about <code>document</code>, events, mounting, or browser state. A separate renderer such as <code>json-to-tag</code> consumes the tree.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section panel" aria-labelledby="cases-heading">
-      <h2 id="cases-heading">How the current samples explore the architecture</h2>
-      <p class="intro">There are four top-level v12 cases. The nested <code>html/footer</code> folder is a subcase of the browser integration example.</p>
-      <table>
-        <thead><tr><th>Case</th><th>Architectural idea</th><th>Current fixture behavior</th></tr></thead>
-        <tbody>
-          <tr><td><a href="../samples/tableTypes/v12/columns/index.js">columns</a></td><td>Reuse column contexts for widths, header cells, and footer controls.</td><td>Header and footer paths omit the row index and do not populate the intended cell arrays.</td></tr>
-          <tr><td><a href="../samples/tableTypes/v12/rows/index.js">rows</a></td><td>Map a data collection into repeated output nodes.</td><td>Uses a bare <code>tr</code> template; the generated rows contain no cells.</td></tr>
-          <tr><td><a href="../samples/tableTypes/v12/rows_good/index.js">rows_good</a></td><td>Address colgroup, header, body, and footer independently in one scaffold.</td><td>Paths address the intended slots, but its body instruction still selects the bare <code>tr</code> template; <code>buildBody1</code> is defined but unused.</td></tr>
-          <tr><td><a href="../samples/tableTypes/v12/html/index.js">html</a></td><td>Pass a generated tree across the renderer boundary.</td><td>The nested footer builder fills header/footer. The browser entry does not use colgroup/body instructions; the large <code>batches.json</code> file is not imported there.</td></tr>
-        </tbody>
-      </table>
-      <aside class="note">The examples illustrate composition ideas, but they are not all complete implementations. The live user guide shows a complete header/body result from the public API.</aside>
-    </section>
-
-    <section class="section panel" aria-labelledby="source-heading">
-      <h2 id="source-heading">Source map and design limits</h2>
-      <div class="split">
-        <div>
-          <h3>Core path</h3>
-          <span class="route">src/index.js → src/v12/index.js<br>→ tableFromData<br>→ collection helpers + applyTemplate<br>→ returned JSON tag tree</span>
-        </div>
-        <div>
-          <h3>Contracts to keep visible</h3>
-          <ul style="margin:0;padding-left:18px;color:#68768d;font-size:12px;line-height:1.7">
-            <li>The body helper uses row property enumeration order.</li>
-            <li>The default table fills header and body, not colgroup or footer.</li>
-            <li><code>collectionFromArray</code> is exported but currently returns <code>undefined</code>.</li>
-            <li>The transformer builds a JSON description; rendering remains a separate step.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      For end-user usage, see the <a href="./index.html">user guide</a>. For file locations and contributor workflow, see the <a href="./developer-guide.html">contributor guide</a>. The detailed API reference is in <a href="./README.md">docs/README.md</a>.
-    </footer>
-  </main>
-</body>
-</html>
+  "destinationPath": ["children", 1, "children", 0, "children"]
+}</code></pre><p>The sample JavaScript resolves the source and template, dispatches through its local function registry, then writes the result at <code>destinationPath</code>. This instruction loop is sample-level orchestration; it is not the implementation of the public <code>tableFromData</code> API.</p><p>Each case owns its instruction list and helper registry. The shared fields express the relationship between data, template, operation, and scaffold location; the chosen path must match the scaffold's nested arrays. The public table builder uses its own fixed header/body path.</p><p>For example, the browser integration uses <a href="../samples/tableTypes/v12/html/buildSpec/index.js"><code>html/buildSpec/index.js</code></a> with its <a href="../samples/tableTypes/v12/html/buildSpec/instuctions.json">instruction file</a> to fill header and footer positions. Its scaffold also contains colgroup and body positions, but this builder's current instruction list does not fill them.</p></section>
+<section><h2>Four v12 sample cases</h2><p>These are four top-level explorations under <code>samples/tableTypes/v12</code>. The nested <code>html/buildSpec</code> folder is part of the browser integration case.</p><table><thead><tr><th>Case</th><th>What it explores</th><th>Current behavior in the files</th></tr></thead><tbody>
+<tr><td><a href="../samples/tableTypes/v12/columns/index.js"><code>columns</code></a></td><td>Reusing column data for colgroup, heading, and footer templates.</td><td>The colgroup destination is indexed correctly. Header and footer destination paths omit the row index, so those generated lists do not populate the scaffold's cell arrays as intended. Evidence: <a href="../samples/tableTypes/v12/columns/instuctions.json">instructions</a>, <a href="../samples/tableTypes/v12/columns/sampleSpec.json">templates</a>, <a href="../samples/tableTypes/v12/columns/table.json">scaffold</a>.</td></tr>
+<tr><td><a href="../samples/tableTypes/v12/rows/index.js"><code>rows</code></a></td><td>Mapping each data record to repeated body rows with <code>collectionFromKey</code>.</td><td>The selected <code>buildBody</code> template is only a <code>tr</code> with attributes; it has no cell children. This case produces empty rows. Evidence: <a href="../samples/tableTypes/v12/rows/instuctions.json">instructions</a>, <a href="../samples/tableTypes/v12/rows/sampleSpec.json">templates</a>.</td></tr>
+<tr><td><a href="../samples/tableTypes/v12/rows_good/index.js"><code>rows_good</code></a></td><td>Composing colgroup, header, body, and footer through a full set of instructions.</td><td>The spec defines <code>buildBody1</code> with outer and inner templates, but the body instruction selects <code>buildBody</code>, the bare row. It therefore produces empty rows and leaves <code>buildBody1</code> unused. Although the runner registers <code>collectionFromInternal</code>, no instruction selects it. Evidence: <a href="../samples/tableTypes/v12/rows_good/instuctions.json">instructions</a>, <a href="../samples/tableTypes/v12/rows_good/sampleSpec.json">templates</a>.</td></tr>
+<tr><td><a href="../samples/tableTypes/v12/html/index.js"><code>html</code></a></td><td>Connecting a JSON table description to browser rendering.</td><td>The nested builder fills header and footer from instructions. The page passes the JSON tree to <code>window.ks.jsonToTag.buildSpecElement</code>. That builder does not fill colgroup or body. Evidence: <a href="../samples/tableTypes/v12/html/buildSpec/instuctions.json">instructions</a>, <a href="../samples/tableTypes/v12/html/buildSpec/table.json">scaffold</a>, <a href="../samples/tableTypes/v12/html/index.html">page</a>.</td></tr>
+</tbody></table><p>These descriptions reflect the current sample files, including incomplete paths and unused templates; folder names do not imply that every case is a finished output.</p></section>
+<section><h2>Implementation boundaries</h2><ul><li><a href="../src/v12/collectionFromArray/index.js"><code>collectionFromArray</code></a> is exported but is currently a stub.</li><li>Body values follow JavaScript property enumeration order; columns are not matched to row keys.</li><li><code>tableFromData</code> expects a direct <code>thead</code> child with a first row and a direct <code>tbody</code> child.</li><li>DOM creation belongs to the renderer. The browser sample demonstrates that boundary in <a href="../samples/tableTypes/v12/html/index.js"><code>html/index.js</code></a>.</li></ul></section>
+</main></body></html>

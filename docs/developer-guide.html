@@ -1,116 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A practical guide to changing, running, and extending the json-transformer-funcs v12 repository.">
-  <title>Contributor guide · json-transformer-funcs</title>
-  <style>
-    :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #172033; background: #f3f6fb; }
-    * { box-sizing: border-box; }
-    body { margin: 0; padding: 26px 16px; }
-    main { width: min(980px, 100%); margin: 0 auto; }
-    a { color: #4d5fc4; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
-    code { color: #4d5fc4; }
-    nav { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 18px; font-size: 12px; font-weight: 700; }
-    .hero, .panel { border: 1px solid #e3eaf3; border-radius: 18px; background: #fff; box-shadow: 0 14px 42px #20345a0c; }
-    .hero { padding: clamp(24px, 5vw, 38px); }
-    .eyebrow { color: #5369d8; font-size: 11px; font-weight: 750; letter-spacing: .13em; text-transform: uppercase; }
-    h1 { margin: 10px 0 8px; font-size: clamp(30px, 5vw, 40px); letter-spacing: -.045em; }
-    h2 { margin: 0 0 9px; font-size: 19px; letter-spacing: -.025em; }
-    h3 { margin: 0 0 6px; font-size: 14px; }
-    p { line-height: 1.6; }
-    .lede { max-width: 750px; margin: 0; color: #61708a; font-size: 15px; }
-    .section { margin-top: 20px; }
-    .panel { padding: 19px; }
-    .intro { margin: -2px 0 13px; color: #6b7890; font-size: 13px; }
-    .split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .card { padding: 15px; border: 1px solid #e5eaf2; border-radius: 12px; background: #fbfcff; }
-    .card p { margin: 0; color: #6b7890; font-size: 12px; }
-    pre { overflow: auto; margin: 10px 0 0; padding: 14px; border-radius: 10px; color: #edf2ff; background: #1d2638; font-size: 11px; line-height: 1.6; }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    th, td { padding: 10px; border-bottom: 1px solid #e9edf4; text-align: left; vertical-align: top; }
-    th { color: #47556e; background: #f8f9fd; }
-    td { color: #66758d; }
-    .note { margin-top: 12px; padding: 13px 15px; border-left: 3px solid #6978d8; border-radius: 8px; color: #5f6d84; background: #f7f8ff; font-size: 12px; line-height: 1.6; }
-    footer { padding: 18px 3px 4px; color: #7a879b; font-size: 12px; }
-    @media (max-width: 680px) { body { padding: 16px 10px; } .split { grid-template-columns: 1fr; } .panel { padding: 16px; } }
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contributor guide · json-transformer-funcs</title>
+<style>
+:root{color-scheme:light;--ink:#17233b;--muted:#566780;--line:#dce4f2;--blue:#435fe2;--paper:#fff;--back:#f2f5fb;--code:#f5f7fc}*{box-sizing:border-box}body{margin:0;background:var(--back);color:var(--ink);font:16px/1.7 system-ui,sans-serif}main{width:min(940px,calc(100% - 36px));margin:42px auto 72px}header,section{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:clamp(24px,5vw,46px);margin-bottom:18px}.eyebrow{color:var(--blue);font-size:.78rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase}h1{margin:10px 0 12px;font-size:clamp(2.2rem,6vw,3.4rem);line-height:1.08;letter-spacing:-.045em}h2{margin:0 0 12px;font-size:1.4rem}p,li{color:var(--muted)}p{margin:8px 0 14px}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}pre{overflow:auto;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:var(--code);color:#263653}a{color:var(--blue);text-underline-offset:3px}table{width:100%;border-collapse:collapse}th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:var(--ink)}td{color:var(--muted)}@media(max-width:640px){table{display:block;overflow-x:auto}}
+</style>
 </head>
-<body>
-  <main>
-    <nav aria-label="Documentation audiences">
-      <a href="./index.html">User guide</a>
-      <a href="./architecture.html">Architecture</a>
-      <a href="./README.md">API reference</a>
-    </nav>
-
-    <header class="hero">
-      <span class="eyebrow">Contributor guide · src/v12</span>
-      <h1>Make a change in the right place</h1>
-      <p class="lede">Use this page to orient yourself in the repository, run the browser examples, and decide which source, sample, and documentation files need to move together.</p>
-    </header>
-
-    <section class="section panel" aria-labelledby="start-heading">
-      <h2 id="start-heading">Get the repository running</h2>
-      <p class="intro">The docs and browser examples use Vite to serve local ES modules and JSON imports.</p>
-      <div class="split">
-        <div class="card"><h3>Install dependencies</h3><pre>npm install</pre></div>
-        <div class="card"><h3>Start the local server</h3><pre>npm run dev</pre><p style="margin-top:9px">Open the URL Vite prints, then visit <code>/docs/index.html</code>.</p></div>
-      </div>
-      <aside class="note"><code>npm run build</code> runs the configured Vite build. The current <code>package.json</code> has no test script; browser examples are useful for checking the end-to-end JSON-to-renderer path.</aside>
-    </section>
-
-    <section class="section panel" aria-labelledby="map-heading">
-      <h2 id="map-heading">Where to make common changes</h2>
-      <p class="intro">The package entry is intentionally small. It re-exports v12; change the v12 implementation for current public behavior.</p>
-      <table>
-        <thead><tr><th>Task</th><th>Start here</th><th>Also consider</th></tr></thead>
-        <tbody>
-          <tr><td>Change table assembly or defaults</td><td><a href="../src/v12/tableFromData/index.js"><code>src/v12/tableFromData</code></a></td><td>API examples in <a href="./README.md">the guide</a> and the user page's live preview.</td></tr>
-          <tr><td>Change placeholder handling</td><td><a href="../src/v12/applyTemplate/index.js"><code>src/v12/applyTemplate</code></a></td><td>Cover strings, text, attributes, and nested children in the explanation.</td></tr>
-          <tr><td>Change repeated columns or cells</td><td><a href="../src/v12/collectionFromKey/index.js"><code>collectionFromKey</code></a> or <a href="../src/v12/collectionFromInternal/index.js"><code>collectionFromInternal</code></a></td><td>Keep the public input contract and sample templates consistent.</td></tr>
-          <tr><td>Add or revise a table example</td><td><a href="../samples/README.md"><code>samples/tableTypes/v12</code></a></td><td>Update the sample map and architecture guide if the composition pattern changes.</td></tr>
-          <tr><td>Change package exports</td><td><a href="../src/index.js"><code>src/index.js</code></a> and <a href="../src/v12/index.js"><code>src/v12/index.js</code></a></td><td>Update the public API list and examples.</td></tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section class="section panel" aria-labelledby="change-heading">
-      <h2 id="change-heading">A small change workflow</h2>
-      <div class="split">
-        <article class="card">
-          <h3>For a behavior change</h3>
-          <p>Make the change under <code>src/v12</code>, keep the public entry re-exporting that implementation, and update the input/output example that explains the changed behavior.</p>
-        </article>
-        <article class="card">
-          <h3>For a new composition pattern</h3>
-          <p>Add a sample beside the existing cases. Keep data, templates, scaffold, and instruction data separate so readers can see which part controls each result.</p>
-        </article>
-      </div>
-      <div class="card" style="margin-top:12px">
-        <h3>For a docs change</h3>
-        <p>Put package usage in the user guide, contributor steps here, and design contracts or data flow in the architecture guide. Keep <code>docs/README.md</code> as the detailed API reference.</p>
-      </div>
-    </section>
-
-    <section class="section panel" aria-labelledby="samples-heading">
-      <h2 id="samples-heading">How sample folders are organized</h2>
-      <p class="intro">Instruction-driven examples use JavaScript as the small interpreter for JSON instruction records.</p>
-      <pre>sampleData.json       values to place in the table
-sampleSpec.json       tag templates and placeholders
-table.json            outer table shape and insertion points
-instuctions.json      source + template + helper + destination
-index.js              imports these pieces and applies each instruction</pre>
-      <p class="intro" style="margin-top:12px">The current fixture filename is spelled <code>instuctions.json</code>. If renaming it, update every import and link in that sample together.</p>
-      <aside class="note">The current four cases are at different stages: <code>columns</code> has two destination paths that miss the row index; <code>rows</code> and <code>rows_good</code> select a bare row template, so their generated body rows have no cells. The <a href="./architecture.html">architecture guide</a> explains the cases and the instruction contract.</aside>
-    </section>
-
-    <footer>
-      Start at the <a href="./index.html">user guide</a> for package usage or the <a href="./architecture.html">architecture guide</a> for the processing model.
-    </footer>
-  </main>
-</body>
-</html>
+<body><main>
+<header><div class="eyebrow">Contributor guide · repository workflow</div><h1>Make a focused change</h1><p>This page is for working on the repository: locating the active implementation, changing the right layer, and keeping examples aligned with the public package.</p></header>
+<section><h2>Start at the published entry</h2><p>The package metadata points to <a href="../src/index.js"><code>src/index.js</code></a>. That file re-exports <a href="../src/v12/index.js"><code>src/v12/index.js</code></a>, which is the current public implementation described here.</p><p>Other version folders are present in the repository, but they are not the target of this v12 guide.</p></section>
+<section><h2>Find the right place to edit</h2><table><thead><tr><th>Change</th><th>Start here</th></tr></thead><tbody>
+<tr><td>Change table assembly or defaults</td><td><a href="../src/v12/tableFromData/index.js"><code>src/v12/tableFromData/index.js</code></a></td></tr>
+<tr><td>Change repeated header generation</td><td><a href="../src/v12/collectionFromKey/index.js"><code>src/v12/collectionFromKey/index.js</code></a></td></tr>
+<tr><td>Change row and cell generation</td><td><a href="../src/v12/collectionFromInternal/index.js"><code>src/v12/collectionFromInternal/index.js</code></a></td></tr>
+<tr><td>Change template substitution or traversal</td><td><a href="../src/v12/applyTemplate/index.js"><code>src/v12/applyTemplate</code></a></td></tr>
+<tr><td>Change which symbols consumers can import</td><td><a href="../src/v12/index.js"><code>src/v12/index.js</code></a> and <a href="../src/index.js"><code>src/index.js</code></a></td></tr>
+<tr><td>Change package scripts or published files</td><td><a href="../package.json"><code>package.json</code></a></td></tr>
+</tbody></table></section>
+<section><h2>Make and review a change</h2><ol><li>Identify the public behavior that should change and trace it from <code>src/index.js</code> into the relevant v12 module.</li><li>Keep a code change in the smallest responsible module. Update an example when it teaches or exercises that behavior.</li><li>For sample composition, keep input data, reusable templates, table scaffold, and instructions in separate JSON files. Sample JavaScript connects those pieces.</li><li>Update the public README or the focused documentation page when the input contract, output, or supported behavior changes.</li></ol><p>The sample instruction filename currently appears as <code>instuctions.json</code> (without the second “r”). Existing imports use that spelling.</p></section>
+<section><h2>Local commands</h2><p>Install the package dependencies, then use the scripts defined by the project:</p><pre><code>npm install
+npm run dev
+npm run build</code></pre><p><code>npm run dev</code> starts the Vite development server. <code>npm run build</code> runs the Vite production build. The current <code>package.json</code> does not define a test script.</p></section>
+<section><h2>Where examples live</h2><p>The v12 examples are under <code>samples/tableTypes/v12</code>. Each top-level folder explores a different composition approach; the <code>html</code> case adds a browser rendering step. Treat these as sample code and inspect their current instructions before using one as a behavioral guarantee.</p></section>
+</main></body></html>

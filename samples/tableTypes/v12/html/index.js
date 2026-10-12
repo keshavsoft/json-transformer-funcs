@@ -1,6 +1,6 @@
 // import render from "../../docs/dist/v13/min.js";
 
-import footer from "./footer/index.js";
+import footer from "./buildSpec/index.js";
 
 // import render from "../../src/index.js";
 
