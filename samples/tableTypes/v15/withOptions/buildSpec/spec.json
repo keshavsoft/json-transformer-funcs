@@ -46,5 +46,26 @@
         "attributes": {
             "class": "btn btn-primary btn-sm"
         }
+    },
+    "buildOption": {
+        "tagName": "option",
+        "textContent": "${rowValue}",
+        "attributes": {
+            "value": "${rowValue}"
+        }
+    },
+    "buildSelect": {
+        "tagName": "select",
+        "attributes": {
+            "data-name": "${columnName}"
+        },
+        "children": []
+    },
+    "buildDataList": {
+        "tagName": "datalist",
+        "attributes": {
+            "data-name": "${columnName}"
+        },
+        "children": []
     }
 }
