@@ -18,17 +18,24 @@ const functionRegistry = {
         collectionFromKey(source, template),
 };
 
-const buildBody = (inSource, inData) => {
-    const bodyWithCells = inSource.map((element, loopIndex) => {
+const buildBody = (inSource, inDataAndTemplates) => {
+    const localSource = inSource;
+
+    const userData = inDataAndTemplates?.userData;
+
+    const userColumns = userData?.columns;
+    const data = userData?.data;
+
+    const bodyWithCells = localSource.map((element, loopIndex) => {
         let rowCells = [];
 
-        for (const [key, value] of Object.entries(inData[loopIndex])) {
-            let bodyCell = structuredClone(sampleSpec?.buildBodyCell);
-            // console.log("loopDataRow : ", loopDataRow);
-            bodyCell.textContent = value;
+        userColumns.map(element => {
+            let bodyCell = structuredClone(inDataAndTemplates?.template);
+
+            bodyCell.textContent = data[loopIndex][element.columnName];
 
             rowCells.push(bodyCell);
-        };
+        });
 
         return {
             ...element,
@@ -54,7 +61,11 @@ const startFunc = (inData) => {
         setByPath(tempTableJson, instruction.destinationPath, result);
     });
 
-    const bodyCells = buildBody(tempTableJson.children[2].children, sampleData?.data);
+    const bodyCells = buildBody(tempTableJson.children[2].children, {
+        userData: sampleData,
+        template: sampleSpec?.buildBodyCell
+    });
+
     tempTableJson.children[2].children = bodyCells;
 
     console.log("body 1 : ", bodyCells[0]);
