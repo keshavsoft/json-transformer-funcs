@@ -1,0 +1,12 @@
+[
+    {
+        "destinationPath": [
+            "children",
+            2,
+            "children"
+        ],
+        "sourceKey": "rows",
+        "templateKey": "buildBody",
+        "func": "collectionFromKey"
+    }
+]

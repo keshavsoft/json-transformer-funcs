@@ -39,4 +39,4 @@ instructions.forEach(instruction => {
     setByPath(tempTableJson, instruction.destinationPath, result);
 });
 
-console.log(JSON.stringify(tempTableJson, null, 2));
+// console.log(JSON.stringify(tempTableJson, null, 2));

@@ -5,12 +5,13 @@ const buildCell = (inSource, inTemplate) =>
 
 const startFunc = (inSource, inTemplate) => {
     const localSource = inSource;
+    console.log("localSource : ", localSource, inTemplate);
 
-    return localSource.map(element => {
-        const cell = buildCell(element, inTemplate);
+    // return localSource.map(element => {
+    //     const cell = buildCell(element, inTemplate);
 
-        return cell;
-    });
+    //     return cell;
+    // });
 };
 
 export default startFunc;
