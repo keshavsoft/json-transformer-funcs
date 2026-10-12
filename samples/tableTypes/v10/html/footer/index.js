@@ -17,6 +17,7 @@ const functionRegistry = {
     collectionFromKey: ({ source, template }) =>
         collectionFromKey(source, template),
 };
+
 const startFunc = (inData) => {
 
     let tempTableJson = structuredClone(tableJson);

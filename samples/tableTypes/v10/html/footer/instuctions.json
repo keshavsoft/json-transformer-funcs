@@ -2,6 +2,18 @@
     {
         "destinationPath": [
             "children",
+            1,
+            "children",
+            0,
+            "children"
+        ],
+        "sourceKey": "columns",
+        "templateKey": "buildHeader",
+        "func": "collectionFromKey"
+    },
+    {
+        "destinationPath": [
+            "children",
             3,
             "children",
             0,

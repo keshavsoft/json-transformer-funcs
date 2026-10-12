@@ -4,12 +4,12 @@ import forTextContent from "./forTextContent.js";
 
 const startFunc = (inTemplate, inElement) => {
     const localClonedTemplate = structuredClone(inTemplate);
-    // console.log("inTemplate : ", inTemplate);
+    // console.log("inTemplate : ", inTemplate, typeof localClonedTemplate);
 
-    if (typeof localClonedTemplate === "string") return forTextContent(localClonedTemplate, inElement);
+    if (typeof localClonedTemplate === "string") return localClonedTemplate;
     if (localClonedTemplate === null || typeof localClonedTemplate !== "object") return localClonedTemplate;
-
-    if ("textContent" in localClonedTemplate) localClonedTemplate.textContent = forTextContent(localClonedTemplate?.forTextContent, inElement);
+    // console.log("1111111 : ", inTemplate, typeof localClonedTemplate);
+    if ("textContent" in localClonedTemplate) localClonedTemplate.textContent = forTextContent(localClonedTemplate?.textContent, inElement);
 
     if ("attributes" in localClonedTemplate) {
         localClonedTemplate.attributes = forAttributes(localClonedTemplate?.attributes, inElement);
