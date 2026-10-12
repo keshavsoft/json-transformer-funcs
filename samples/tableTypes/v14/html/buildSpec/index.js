@@ -1,4 +1,7 @@
-import { collectionFromKey, collectionToCollection, applyTemplate } from "../../../../../src/index.js";
+import {
+    collectionFromKey, collectionToCollection,
+    applyTemplate, tableBody
+} from "../../../../../src/index.js";
 
 import sampleData from "./sampleData.json" with { type: "json" };
 import sampleSpec from "./sampleSpec.json" with { type: "json" };
@@ -29,6 +32,8 @@ const functionRegistry = {
         collectionToCollection(source, template),
     applyTemplate: (inTemplate, inElement) =>
         applyTemplate(inTemplate, inElement),
+    tableBody: (inTemplate, inRowData, inColumns) =>
+        tableBody(inTemplate, inRowData, inColumns),
 };
 
 const startFunc = (inData) => {
@@ -36,8 +41,9 @@ const startFunc = (inData) => {
 
     let afterRows = runRowInstuctions(tempTableJson);
     let afterColumns = runColumnInstuctions(afterRows);
+    let afterBody = buildBody(afterColumns);
 
-    return afterColumns;
+    return afterBody;
 };
 
 const runColumnInstuctions = (tempTableJson) => {
@@ -89,6 +95,16 @@ const runRowInstuctions = (tempTableJson) => {
             console.log("instruction not complete : ", instruction);
 
         };
+    });
+
+    return tempTableJson;
+};
+
+const buildBody = (tempTableJson) => {
+    tempTableJson.children[2].children.forEach((loopRow, loopIndex) => {
+        const row = sampleData?.data[loopIndex];
+        const bodyRow = functionRegistry?.tableBody(sampleSpec?.buildBodyCell, row, sampleData?.columns);
+        loopRow.children = bodyRow;
     });
 
     return tempTableJson;

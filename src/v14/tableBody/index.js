@@ -1,26 +1,18 @@
-const startFunc = (inSource, inDataAndTemplates) => {
-    const newSource = structuredClone(inSource);
+const startFunc = (inTemplate, inRowData, inColumns) => {
+    const userColumns = inColumns;
+    const localRowData = inRowData;
 
-    const userData = inDataAndTemplates?.userData;
+    let rowCells = [];
 
-    const userColumns = userData?.columns;
-    const data = userData?.data;
+    userColumns.map(element => {
+        let bodyCell = structuredClone(inTemplate);
 
-    newSource.forEach((element, loopIndex) => {
-        let rowCells = [];
+        bodyCell.textContent = localRowData[element.columnName];
 
-        userColumns.map(element => {
-            let bodyCell = structuredClone(inDataAndTemplates?.template);
-
-            bodyCell.textContent = data[loopIndex][element.columnName];
-
-            rowCells.push(bodyCell);
-        });
-
-        element.children = rowCells;
+        rowCells.push(bodyCell);
     });
 
-    return newSource;
+    return rowCells;
 };
 
 export default startFunc;
