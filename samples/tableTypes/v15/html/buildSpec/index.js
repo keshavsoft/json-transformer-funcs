@@ -57,8 +57,18 @@ const startFunc = () => {
         const fromInstruction = functionRegistry[instruction?.func](source, spec[instruction?.templateKey]);
 
         setByPath(destinationPath, fromInstruction);
-    })
+    });
 
+    columnInstuctions.forEach(instruction => {
+        const sourcePath = instruction.sourcePath;
+        const source = getByPath(sourcePath);
+        // console.log("source : ", source);
+        const destinationPath = instruction.destinationPath;
+
+        const fromInstruction = functionRegistry[instruction?.func](source, spec[instruction?.templateKey]);
+
+        setByPath(destinationPath, fromInstruction);
+    });
     // let afterRows = runRowInstuctions(tempTableJson);
 
     // return afterRows;

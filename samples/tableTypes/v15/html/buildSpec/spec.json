@@ -19,6 +19,20 @@
             "class": "py-3 px-3 fw-semibold text-uppercase small"
         }
     },
+    "buildFooter": {
+        "tagName": "td",
+        "children": [
+            {
+                "tagName": "input",
+                "attributes": {
+                    "type": "text",
+                    "placeholder": "enter ${columnName}",
+                    "name": "${columnName}",
+                    "class": "form-control"
+                }
+            }
+        ]
+    },
     "buildHeaderRow": {
         "tagName": "tr",
         "attributes": {
@@ -39,20 +53,6 @@
         "attributes": {
             "class": "py-3 px-3 text-secondary"
         }
-    },
-    "buildFooter": {
-        "tagName": "td",
-        "children": [
-            {
-                "tagName": "input",
-                "attributes": {
-                    "type": "text",
-                    "placeholder": "enter ${columnName}",
-                    "name": "${columnName}",
-                    "class": "form-control"
-                }
-            }
-        ]
     },
     "buildBody1": {
         "outerTemplate": {

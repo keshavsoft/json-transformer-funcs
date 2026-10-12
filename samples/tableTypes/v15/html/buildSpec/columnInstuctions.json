@@ -1,26 +1,48 @@
 [
     {
         "destinationPath": [
+            "base",
+            "children",
+            0,
+            "children"
+        ],
+        "sourcePath": [
+            "data",
+            "columns"
+        ],
+        "templateKey": "buildColGroup",
+        "func": "fromCollection"
+    },
+    {
+        "destinationPath": [
+            "base",
             "children",
             1,
             "children",
             0,
             "children"
         ],
-        "sourceKey": "columns",
+        "sourcePath": [
+            "data",
+            "columns"
+        ],
         "templateKey": "buildHeader",
-        "func": "applyTemplate"
+        "func": "fromCollection"
     },
     {
         "destinationPath": [
+            "base",
             "children",
             3,
             "children",
             0,
             "children"
         ],
-        "sourceKey": "columns",
+        "sourcePath": [
+            "data",
+            "columns"
+        ],
         "templateKey": "buildFooter",
-        "func": "applyTemplate"
+        "func": "fromCollection"
     }
 ]
