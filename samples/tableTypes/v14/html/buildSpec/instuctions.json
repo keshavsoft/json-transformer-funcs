@@ -1,0 +1,47 @@
+[
+    {
+        "destinationPath": [
+            "children",
+            1,
+            "children",
+            0,
+            "children"
+        ],
+        "sourceKey": "columns",
+        "templateKey": "buildHeader",
+        "func": "collectionFromKey"
+    },
+    {
+        "destinationPath": [
+            "children",
+            2,
+            "children"
+        ],
+        "sourceKey": "data",
+        "templateKey": "buildBody",
+        "func": "collectionFromKey"
+    },
+    {
+        "destinationPath": [
+            "children",
+            2,
+            "children",
+            "children"
+        ],
+        "sourceKey": "destinationPath",
+        "templateKey": "buildBodyCell",
+        "func": "collectionToCollection"
+    },
+    {
+        "destinationPath": [
+            "children",
+            3,
+            "children",
+            0,
+            "children"
+        ],
+        "sourceKey": "columns",
+        "templateKey": "buildFooter",
+        "func": "collectionFromKey"
+    }
+]

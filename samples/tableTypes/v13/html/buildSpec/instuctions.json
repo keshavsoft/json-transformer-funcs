@@ -24,6 +24,17 @@
     {
         "destinationPath": [
             "children",
+            2,
+            "children",
+            "children"
+        ],
+        "sourceKey": "destinationPath",
+        "templateKey": "buildBodyCell",
+        "func": "collectionToCollection"
+    },
+    {
+        "destinationPath": [
+            "children",
             3,
             "children",
             0,

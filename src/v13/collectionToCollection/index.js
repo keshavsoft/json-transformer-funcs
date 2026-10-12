@@ -1,4 +1,6 @@
 const startFunc = (inSource, inDataAndTemplates) => {
+    // console.log("inSource, inDataAndTemplates : ", inSource, inDataAndTemplates);
+
     const localSource = inSource;
 
     const userData = inDataAndTemplates?.userData;
@@ -6,7 +8,7 @@ const startFunc = (inSource, inDataAndTemplates) => {
     const userColumns = userData?.columns;
     const data = userData?.data;
 
-    const bodyWithCells = localSource.map((element, loopIndex) => {
+    localSource.forEach((element, loopIndex) => {
         let rowCells = [];
 
         userColumns.map(element => {
@@ -17,13 +19,8 @@ const startFunc = (inSource, inDataAndTemplates) => {
             rowCells.push(bodyCell);
         });
 
-        return {
-            ...element,
-            children: rowCells
-        };
+        element.children = rowCells;
     });
-
-    return bodyWithCells;
 };
 
 export default startFunc;

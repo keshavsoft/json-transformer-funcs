@@ -1,4 +1,4 @@
-import { collectionFromKey } from "../../../../../src/index.js";
+import { collectionFromKey, collectionToCollection } from "../../../../../src/index.js";
 
 import sampleData from "./sampleData.json" with { type: "json" };
 import sampleSpec from "./sampleSpec.json" with { type: "json" };
@@ -13,9 +13,20 @@ const setByPath = (object, path, value) => {
     target[lastKey] = value;
 };
 
+const getByPath = (object, path) => {
+    const keys = [...path];
+    const lastKey = keys.pop();
+
+    const target = keys.reduce((current, key) => current[key], object);
+
+    return target;
+};
+
 const functionRegistry = {
     collectionFromKey: ({ source, template }) =>
         collectionFromKey(source, template),
+    collectionToCollection: ({ source, template }) =>
+        collectionToCollection(source, template),
 };
 
 const buildBody = (inSource, inDataAndTemplates) => {
@@ -51,25 +62,48 @@ const startFunc = (inData) => {
     let tempTableJson = structuredClone(tableJson);
 
     instructions.forEach(instruction => {
-        const input = {
-            source: inData[instruction.sourceKey],
-            template: sampleSpec[instruction.templateKey]
+        const sourceKey = instruction.sourceKey;
+        const templateKey = instruction.templateKey;
+        const func = instruction.func;
+        const destinationPath = instruction.destinationPath;
+        // console.log("func : ", functionRegistry, func);
+
+        if (sourceKey && templateKey && func && destinationPath) {
+            let source = inData[sourceKey];
+            let template = sampleSpec[templateKey];
+
+            if (sourceKey === "destinationPath") {
+                source = getByPath(tempTableJson, destinationPath);
+                template = {};
+
+                template.userData = inData;
+                template.template = sampleSpec[templateKey];
+                // template: sampleSpec?.buildBodyCell
+            };
+
+            const input = {
+                source,
+                template
+            };
+
+            const result = functionRegistry[func](input);
+
+            setByPath(tempTableJson, destinationPath, result);
+        } else {
+            console.log("instruction not complete : ", instruction);
+
         };
-
-        const result = functionRegistry[instruction.func](input);
-
-        setByPath(tempTableJson, instruction.destinationPath, result);
     });
 
-    const bodyCells = buildBody(tempTableJson.children[2].children, {
-        userData: sampleData,
-        template: sampleSpec?.buildBodyCell
-    });
+    // const bodyCells = buildBody(tempTableJson.children[2].children, {
+    //     userData: sampleData,
+    //     template: sampleSpec?.buildBodyCell
+    // });
 
-    tempTableJson.children[2].children = bodyCells;
+    // tempTableJson.children[2].children = bodyCells;
 
-    console.log("body 1 : ", bodyCells[0]);
-    console.log("body 2 : ", bodyCells[1]);
+    // console.log("body 1 : ", bodyCells[0]);
+    // console.log("body 2 : ", bodyCells[1]);
 
     // console.log("tempTableJson : ", tempTableJson.children[2].children);
 
