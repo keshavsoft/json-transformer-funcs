@@ -2,7 +2,7 @@
 
 There are **four top-level sample cases** under [`samples/tableTypes/v12`](tableTypes/v12). They explore the same table-building idea in pieces: column-derived parts, repeated rows, instruction-driven assembly, and browser rendering. The nested `html/footer` folder is an integration subcase, not a fifth top-level case.
 
-For the compact browser overview, see [`docs/index.html`](../docs/index.html). For the table pieces assembled into a complete JSON tree and rendered DOM, see [`docs/table-workflow.html`](../docs/table-workflow.html).
+For end-user usage and a live JSON/DOM preview, see [`docs/index.html`](../docs/index.html). For the overall composition model and how the sample cases connect, see [`docs/architecture.html`](../docs/architecture.html). Contributors can start with [`docs/developer-guide.html`](../docs/developer-guide.html).
 
 | Sample | What it shows |
 | --- | --- |

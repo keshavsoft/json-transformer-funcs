@@ -248,7 +248,7 @@ document.querySelector("#table-host").appendChild(tableElement);
 
 The renderer is a separate dependency and is not called by this package.
 
-For a small working browser example using the repository's v12 entry, open [`index.html`](index.html). For the table-scaffold walkthrough with both the populated JSON and rendered DOM, open [`table-workflow.html`](table-workflow.html). Serve the repository over HTTP (for example, with `npm run dev`) so the browser can load its JavaScript modules.
+For end-user usage and a live JSON/DOM preview using the repository's v12 entry, open [`index.html`](index.html). For the design model and sample composition patterns, open [`architecture.html`](architecture.html). Contributors can use the [contributor guide](developer-guide.html). Serve the repository over HTTP (for example, with `npm run dev`) so the browser can load its JavaScript modules.
 
 ## Current constraints
 
@@ -273,4 +273,4 @@ For a small working browser example using the repository's v12 entry, open [`ind
 
 There are four top-level v12 sample cases: `columns`, `rows`, `rows_good`, and `html`. They show column-driven parts, row repetition, instruction-based assembly, and the browser rendering step. Some fixtures are exploratory rather than complete: the `columns` header/footer paths miss the row index, while the row cases select a plain `<tr>` template and therefore leave generated rows without cells. The nested `html/footer` case fills header and footer slots; it does not fill the colgroup or body.
 
-The [table walkthrough](table-workflow.html) explains how each instruction ties a data key, template key, registered helper, and scaffold path together. It also shows the footer sample's actual partial JSON output next to a complete table composition and its rendered DOM. See the [v12 sample map](../samples/README.md) for links to every case.
+The [architecture guide](architecture.html) explains how each instruction ties a data key, template key, registered helper, and scaffold path together, and how that sample pattern relates to the direct public API. See the [v12 sample map](../samples/README.md) for links to every case.

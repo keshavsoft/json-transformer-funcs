@@ -84,9 +84,10 @@ import {
 ## v12 source and examples
 
 - Public implementation: [`src/v12`](src/v12)
-- Detailed guide: [`docs/README.md`](docs/README.md)
-- Small browser example: [`docs/index.html`](docs/index.html)
-- Table assembly walkthrough: [`docs/table-workflow.html`](docs/table-workflow.html)
+- End-user guide and live preview: [`docs/index.html`](docs/index.html)
+- Contributor guide: [`docs/developer-guide.html`](docs/developer-guide.html)
+- Architecture guide: [`docs/architecture.html`](docs/architecture.html)
+- Detailed API reference: [`docs/README.md`](docs/README.md)
 - v12 sample map: [`samples/README.md`](samples/README.md)
 
 The repository contains other historical source and sample folders. They are not part of this v12 guide.
