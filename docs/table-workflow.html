@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A short walkthrough of how v12 table data and templates populate a JSON table scaffold before DOM rendering.">
+  <title>How a table is built · json-transformer-funcs</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #172033;
+      background: #f3f6fb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body { min-height: 100vh; margin: 0; padding: 32px 18px; background: #f3f6fb; }
+    main { width: min(1060px, 100%); margin: 0 auto; }
+    a { color: #4d5fc4; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .back { display: inline-block; margin: 0 0 22px; font-size: 13px; font-weight: 650; }
+
+    .hero, .card {
+      border: 1px solid #e3eaf3;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 14px 42px #20345a0c;
+    }
+
+    .hero { padding: clamp(24px, 5vw, 42px); }
+    .eyebrow { color: #5369d8; font-size: 11px; font-weight: 750; letter-spacing: .13em; text-transform: uppercase; }
+    h1 { margin: 10px 0 8px; font-size: clamp(28px, 5vw, 40px); letter-spacing: -.045em; }
+    .lede { max-width: 720px; margin: 0; color: #61708a; line-height: 1.65; }
+
+    .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 18px 0 22px; }
+    .step { padding: 16px; border: 1px solid #e9edf5; border-radius: 14px; background: #fbfcff; }
+    .step-num { display: inline-grid; width: 24px; height: 24px; place-items: center; margin-bottom: 10px; border-radius: 8px; color: #465ac5; background: #edf0ff; font-size: 12px; font-weight: 750; }
+    .step h2 { margin: 0 0 5px; font-size: 14px; }
+    .step p { margin: 0; color: #69778e; font-size: 12px; line-height: 1.55; }
+
+    .source-note { padding: 16px 18px; border-left: 3px solid #6978d8; border-radius: 8px; color: #5f6d84; background: #f7f8ff; font-size: 13px; line-height: 1.6; }
+    .source-note code { color: #4d5fc4; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, .9fr); gap: 14px; margin-top: 18px; align-items: start; }
+    .card { padding: 20px; }
+    .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .card h2 { margin: 0; font-size: 16px; }
+    .card-head p { margin: 5px 0 0; color: #738097; font-size: 12px; line-height: 1.5; }
+    .tag { padding: 5px 8px; border-radius: 999px; color: #5364bd; background: #f0f2ff; font-size: 10px; font-weight: 750; white-space: nowrap; }
+
+    #table-mount { overflow-x: auto; }
+    .table { width: 100%; border-collapse: collapse; text-align: left; }
+    .table th { padding: 11px 12px; color: #fff; background: #293653; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; }
+    .table td { padding: 11px 12px; border-bottom: 1px solid #edf0f5; color: #354158; font-size: 13px; }
+    .table tbody tr:nth-child(even) { background: #f8faff; }
+    .table tfoot td { padding: 9px 8px; background: #f5f7fb; }
+    .table input { width: 100%; min-width: 75px; padding: 8px 9px; border: 1px solid #dfe5ef; border-radius: 7px; color: #36435a; background: #fff; font: inherit; font-size: 12px; }
+
+    details { border: 1px solid #e8edf4; border-radius: 11px; background: #fbfcfe; }
+    details + details { margin-top: 10px; }
+    summary { padding: 12px 13px; color: #3b4962; cursor: pointer; font-size: 12px; font-weight: 700; }
+    pre { max-height: 460px; overflow: auto; margin: 0; padding: 0 14px 14px; color: #33415b; font: 11px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre; }
+    .loading { color: #78859a; font-size: 13px; line-height: 1.6; }
+    footer { padding: 18px 4px 4px; color: #7a879b; font-size: 12px; }
+
+    @media (max-width: 760px) {
+      body { padding: 18px 12px; }
+      .steps, .workspace { grid-template-columns: 1fr; }
+      .step { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <a class="back" href="./index.html">← Back to the table example</a>
+
+    <header class="hero">
+      <span class="eyebrow">A v12 table walkthrough</span>
+      <h1>Build the table in pieces</h1>
+      <p class="lede">A table begins as a JSON scaffold with empty places for its columns, headings, rows, and footer. Data and templates fill those places. The finished JSON can be inspected on its own, then converted into browser DOM.</p>
+    </header>
+
+    <section class="steps" aria-label="Table build steps">
+      <article class="step">
+        <span class="step-num">1</span>
+        <h2>Start with the table shape</h2>
+        <p><code>table.json</code> sets the order and nesting: colgroup, thead, tbody, and tfoot. Its child arrays are the insertion points.</p>
+      </article>
+      <article class="step">
+        <span class="step-num">2</span>
+        <h2>Supply data and templates</h2>
+        <p><code>sampleData.json</code> has column widths, column names, and records. <code>sampleSpec.json</code> describes how each repeated part looks.</p>
+      </article>
+      <article class="step">
+        <span class="step-num">3</span>
+        <h2>Inspect, then render</h2>
+        <p>v12 fills the scaffold and returns finished JSON. <code>json-to-tag</code> turns that same tree into the visible table.</p>
+      </article>
+    </section>
+
+    <aside class="source-note">
+      In <code>samples/tableTypes/v12/html/footer</code>, the instruction-driven footer module clones the scaffold and fills the header and footer paths. This walkthrough also fills the colgroup and body, so you can see the complete table come together from the same data, templates, and scaffold. Source files: <a href="../samples/tableTypes/v12/html/footer/sampleData.json">data</a>, <a href="../samples/tableTypes/v12/html/footer/sampleSpec.json">templates</a>, <a href="../samples/tableTypes/v12/html/footer/table.json">scaffold</a>, and <a href="../samples/tableTypes/v12/html/footer/instuctions.json">instructions</a>.
+    </aside>
+
+    <section class="workspace" aria-label="Finished JSON and rendered table">
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>Rendered table</h2>
+            <p>Header and footer controls come from the column list; body cells come from each record.</p>
+          </div>
+          <span class="tag">DOM preview</span>
+        </div>
+        <div id="table-mount" aria-live="polite"><p class="loading">The preview loads when this page is served over HTTP. From the repo, run <code>npm run dev</code> and open <code>/docs/table-workflow.html</code>.</p></div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>Finished table JSON</h2>
+            <p>This is the output of the table-building step, before DOM rendering.</p>
+          </div>
+          <span class="tag">JSON tree</span>
+        </div>
+        <details open>
+          <summary>Inspect the populated scaffold</summary>
+          <pre id="tree-output">Waiting for the table modules…</pre>
+        </details>
+        <details>
+          <summary>See where each piece is inserted</summary>
+          <pre>table.children[0].children                 ← colGroup
+table.children[1].children[0].children     ← columns → header cells
+table.children[2].children                 ← data → rows and cells
+table.children[3].children[0].children     ← columns → footer controls</pre>
+        </details>
+      </article>
+    </section>
+
+    <footer>
+      The transformer builds the JSON table description. Rendering is a separate step, so the finished tree can also be saved, inspected, or passed to another renderer.
+    </footer>
+  </main>
+
+  <script type="module">
+    import { collectionFromKey, collectionFromInternal } from "../src/index.js";
+    import buildSpecElement from "https://keshavsoft.github.io/json-to-tag/dist/v9/min.js";
+    import sourceData from "../samples/tableTypes/v12/html/footer/sampleData.json" with { type: "json" };
+    import templates from "../samples/tableTypes/v12/html/footer/sampleSpec.json" with { type: "json" };
+    import tableScaffold from "../samples/tableTypes/v12/html/footer/table.json" with { type: "json" };
+
+    const tree = structuredClone(tableScaffold);
+
+    tree.children[0].children = collectionFromKey(sourceData.colGroup, templates.buildColGroup);
+    tree.children[1].children[0].children = collectionFromKey(sourceData.columns, templates.buildHeader);
+    tree.children[2].children = collectionFromInternal(
+      sourceData.data,
+      templates.buildBody1.outerTemplate,
+      templates.buildBody1.innerTemplate
+    );
+    tree.children[3].children[0].children = collectionFromKey(sourceData.columns, templates.buildFooter);
+
+    document.querySelector("#tree-output").textContent = JSON.stringify(tree, null, 2);
+    document.querySelector("#table-mount").replaceChildren(buildSpecElement(tree));
+  </script>
+</body>
+</html>

@@ -248,7 +248,7 @@ document.querySelector("#table-host").appendChild(tableElement);
 
 The renderer is a separate dependency and is not called by this package.
 
-For a small working browser example using the repository's v12 entry, open [`index.html`](index.html). Serve the repository over HTTP (for example, with `npm run dev`) so the browser can load its JavaScript modules.
+For a small working browser example using the repository's v12 entry, open [`index.html`](index.html). For the table-scaffold walkthrough with both the populated JSON and rendered DOM, open [`table-workflow.html`](table-workflow.html). Serve the repository over HTTP (for example, with `npm run dev`) so the browser can load its JavaScript modules.
 
 ## Current constraints
 

@@ -2,7 +2,7 @@
 
 These examples are grouped under [`samples/tableTypes/v12`](tableTypes/v12) and use the repository entry `src/index.js`, which re-exports the current `src/v12` API.
 
-For a compact end-to-end browser example, see [`docs/index.html`](../docs/index.html).
+For the compact browser overview, see [`docs/index.html`](../docs/index.html). For the table pieces assembled into a complete JSON tree and rendered DOM, see [`docs/table-workflow.html`](../docs/table-workflow.html).
 
 | Sample | What it shows |
 | --- | --- |
