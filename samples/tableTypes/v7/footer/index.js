@@ -32,9 +32,10 @@ instructions.forEach(instruction => {
 });
 
 // console.log(JSON.stringify(tempTableJson, null, 2));
-console.log("colgroup : ", tempTableJson.children[0].children);
-console.log("head : ", tempTableJson.children[1].children);
+// console.log("colgroup : ", tempTableJson.children[0].children);
+// console.log("head : ", tempTableJson.children[1].children);
 
 // console.log("body : ", tempTableJson.children[2].children);
 
-console.log("footer : ", tempTableJson.children[3].children);
+console.log("footer1 : ", tempTableJson.children[3].children.children[0].children);
+console.log("footer2 : ", tempTableJson.children[3].children.children);
