@@ -1,0 +1,28 @@
+{
+  "columns": [
+    {
+      "key": "id",
+      "columnName": "ID",
+      "width": "80px"
+    },
+    {
+      "key": "name",
+      "columnName": "Full Name",
+      "width": "400px"
+    }
+  ],
+  "rows": [
+    {
+      "id": "101",
+      "name": "Keshav Nalam"
+    },
+    {
+      "id": "102",
+      "name": "Sarah Connor"
+    },
+    {
+      "id": "103",
+      "name": "Michael Chang"
+    }
+  ]
+}

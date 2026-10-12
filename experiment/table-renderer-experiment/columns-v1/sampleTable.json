@@ -1,0 +1,44 @@
+{
+  "tagName": "table",
+  "children": [
+    {
+      "tagName": "colgroup",
+      "children": []
+    },
+    {
+      "tagName": "thead",
+      "children": [
+        {
+          "tagName": "tr",
+          "children": []
+        }
+      ]
+    },
+    {
+      "tagName": "tbody",
+      "children": [
+        {
+          "tagName": "tr",
+          "children": []
+        },
+        {
+          "tagName": "tr",
+          "children": []
+        },
+        {
+          "tagName": "tr",
+          "children": []
+        }
+      ]
+    },
+    {
+      "tagName": "tfoot",
+      "children": [
+        {
+          "tagName": "tr",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

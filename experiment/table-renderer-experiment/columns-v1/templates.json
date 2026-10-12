@@ -1,0 +1,27 @@
+{
+  "col": {
+    "tagName": "col",
+    "attributes": {
+      "width": "${width}"
+    }
+  },
+  "header": {
+    "tagName": "th"
+  },
+  "body": {
+    "tagName": "td"
+  },
+  "footer": {
+    "tagName": "td",
+    "children": [
+      {
+        "tagName": "input",
+        "attributes": {
+          "type": "text",
+          "placeholder": "${columnName}",
+          "class": "form-control"
+        }
+      }
+    ]
+  }
+}
