@@ -1,15 +1,15 @@
 import {
-    fromCollection
+    fromCollection, tableBody, buildBody
 } from "../../../../../src/index.js";
 
-import data from "./data.json" with { type: "json" };
+// import data from "./data.json" with { type: "json" };
 import spec from "./spec.json" with { type: "json" };
 import base from "./base.json" with { type: "json" };
 import columnInstuctions from "./columnInstuctions.json" with { type: "json" };
 import rowInstuctions from "./rowInstuctions.json" with { type: "json" };
 
 const jsonRegistry = {
-    data,
+    data: "",
     base,
     spec
 };
@@ -35,19 +35,22 @@ const getByPath = (path) => {
     return target;
 };
 
-const appendToTargetPath = (object, path, value) => {
-    const keys = [...path];
-    const lastKey = keys.pop();
-
-    const target = keys.reduce((current, key) => current[key], object);
-    target[lastKey].push(value);
-};
-
 const functionRegistry = {
-    fromCollection,
+    fromCollection, tableBody, buildBody
 };
 
-const startFunc = () => {
+const buildBody1 = (inTarget, inData, inCellSpec) => {
+    inTarget.forEach((loopRow, loopIndex) => {
+        const row = inData?.data[loopIndex];
+        const bodyRow = functionRegistry?.tableBody(inCellSpec, row, inData?.columns);
+        loopRow.children = bodyRow;
+    });
+};
+
+const startFunc = (inData) => {
+    jsonRegistry.data = inData;
+    console.log("inData : ", inData);
+
     rowInstuctions.forEach(instruction => {
         const sourcePath = instruction.sourcePath;
         const source = getByPath(sourcePath);
@@ -71,75 +74,13 @@ const startFunc = () => {
     });
     // let afterRows = runRowInstuctions(tempTableJson);
 
-    // return afterRows;
+    buildBody(jsonRegistry.base.children[2].children, inData, jsonRegistry?.spec?.buildBodyCell);
+
+    return jsonRegistry.base;
 };
 
-const runColumnInstuctions = (tempTableJson) => {
-    sampleData?.columns.forEach(loopColumn => {
-        columnInstuctions.forEach(instruction => {
-            const sourceKey = instruction.sourceKey;
-            const templateKey = instruction.templateKey;
-            const func = instruction.func;
-            const destinationPath = instruction.destinationPath;
-            // console.log("func : ", functionRegistry, func);
-
-            if (sourceKey && templateKey && func && destinationPath) {
-                let template = sampleSpec[templateKey];
-
-                const result = functionRegistry[func](template, loopColumn);
-
-                appendToTargetPath(tempTableJson, destinationPath, result);
-            } else {
-                console.log("instruction not complete : ", instruction);
-            };
-        });
-
-    });
-
-    return tempTableJson;
-};
-
-const runRowInstuctions = (tempTableJson) => {
-    rowInstuctions.forEach(instruction => {
-        const sourceKey = instruction.sourceKey;
-        const templateKey = instruction.templateKey;
-        const func = instruction.func;
-        const destinationPath = instruction.destinationPath;
-        // console.log("func : ", functionRegistry, func);
-
-        if (sourceKey && templateKey && func && destinationPath) {
-            let source = sampleData[sourceKey];
-            let template = sampleSpec[templateKey];
-
-            const input = {
-                source,
-                template
-            };
-
-            const result = functionRegistry[func](input);
-
-            setByPath(tempTableJson, destinationPath, result);
-        } else {
-            console.log("instruction not complete : ", instruction);
-
-        };
-    });
-
-    return tempTableJson;
-};
-
-const buildBody = (tempTableJson) => {
-    tempTableJson.children[2].children.forEach((loopRow, loopIndex) => {
-        const row = sampleData?.data[loopIndex];
-        const bodyRow = functionRegistry?.tableBody(sampleSpec?.buildBodyCell, row, sampleData?.columns);
-        loopRow.children = bodyRow;
-    });
-
-    return tempTableJson;
-};
-
-startFunc();
-console.log("last ", JSON.stringify(base, null, 2));
+// startFunc();
+// console.log("last ", JSON.stringify(base, null, 2));
 
 
 export default startFunc;

@@ -22,6 +22,8 @@ const start = () => {
     };
 
     const spec = footer(localSpec);
+    console.log("spec : ", spec);
+
     const controls = window.ks.jsonToTag.buildSpecElement(spec);
 
     let jVarLocaldom = document.getElementById('dom-render-container');

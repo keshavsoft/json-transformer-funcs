@@ -33,6 +33,13 @@
             }
         ]
     },
+    "buildBodyCell": {
+        "tagName": "td",
+        "textContent": "${rowValue}",
+        "attributes": {
+            "class": "py-3 px-3 text-secondary"
+        }
+    },
     "buildHeaderRow": {
         "tagName": "tr",
         "attributes": {
@@ -46,13 +53,6 @@
             "class": "align-middle"
         },
         "children": []
-    },
-    "buildBodyCell": {
-        "tagName": "td",
-        "textContent": "${rowValue}",
-        "attributes": {
-            "class": "py-3 px-3 text-secondary"
-        }
     },
     "buildBody1": {
         "outerTemplate": {
