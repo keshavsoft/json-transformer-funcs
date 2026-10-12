@@ -1,6 +1,5 @@
 import {
-    collectionFromKey, collectionToCollection,
-    applyTemplate, tableBody
+    fromCollection
 } from "../../../../../src/index.js";
 
 import data from "./data.json" with { type: "json" };
@@ -15,11 +14,14 @@ const jsonRegistry = {
     spec
 };
 
-const setByPath = (object, path, value) => {
-    const keys = [...path];
+const setByPath = (path, value) => {
+    const jsonNeeded = path[0];
+
+    const keys = path.slice(1);
     const lastKey = keys.pop();
 
-    const target = keys.reduce((current, key) => current[key], object);
+    let target = keys.reduce((current, key) => current[key], jsonRegistry[jsonNeeded]);
+
     target[lastKey] = value;
 };
 
@@ -42,26 +44,19 @@ const appendToTargetPath = (object, path, value) => {
 };
 
 const functionRegistry = {
-    collectionFromKey: ({ source, template }) =>
-        collectionFromKey(source, template),
-    collectionToCollection: ({ source, template }) =>
-        collectionToCollection(source, template),
-    applyTemplate: (inTemplate, inElement) =>
-        applyTemplate(inTemplate, inElement),
-    tableBody: (inTemplate, inRowData, inColumns) =>
-        tableBody(inTemplate, inRowData, inColumns),
+    fromCollection,
 };
 
-const startFunc = (inData, inBase, inSpec) => {
-    let tempTableJson = structuredClone(inBase);
-
+const startFunc = () => {
     rowInstuctions.forEach(instruction => {
         const sourcePath = instruction.sourcePath;
         const source = getByPath(sourcePath);
-        console.log("source : ", source);
+        // console.log("source : ", source);
+        const destinationPath = instruction.destinationPath;
 
-        const fromInstruction = functionRegistry[instruction?.func](source, instruction?.templateKey);
-        console.log("fromInstruction : ", fromInstruction);
+        const fromInstruction = functionRegistry[instruction?.func](source, spec[instruction?.templateKey]);
+
+        setByPath(destinationPath, fromInstruction);
     })
 
     // let afterRows = runRowInstuctions(tempTableJson);
@@ -133,8 +128,8 @@ const buildBody = (tempTableJson) => {
     return tempTableJson;
 };
 
-const output = startFunc(data, base, spec);
-console.log(JSON.stringify(output, null, 2));
+startFunc();
+console.log("last ", JSON.stringify(base, null, 2));
 
 
 export default startFunc;

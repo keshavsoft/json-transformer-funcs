@@ -1,6 +1,7 @@
 [
     {
         "destinationPath": [
+            "base",
             "children",
             2,
             "children"
@@ -10,6 +11,6 @@
             "data"
         ],
         "templateKey": "buildBodyTr",
-        "func": "collectionFromKey"
+        "func": "fromCollection"
     }
 ]
