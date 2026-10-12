@@ -1,0 +1,34 @@
+[
+    {
+        "destinationPath": [
+            "children",
+            0,
+            "children"
+        ],
+        "sourceKey": "columns",
+        "templateKey": "buildColGroup",
+        "func": "collectionFromKey"
+    },
+    {
+        "destinationPath": [
+            "children",
+            1,
+            "children",
+            "children"
+        ],
+        "sourceKey": "columns",
+        "templateKey": "buildHeader",
+        "func": "collectionFromKey"
+    },
+    {
+        "destinationPath": [
+            "children",
+            3,
+            "children",
+            "children"
+        ],
+        "sourceKey": "columns",
+        "templateKey": "buildFooter",
+        "func": "collectionFromKey"
+    }
+]
