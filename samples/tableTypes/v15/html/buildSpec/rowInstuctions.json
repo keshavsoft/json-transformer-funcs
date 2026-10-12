@@ -5,7 +5,10 @@
             2,
             "children"
         ],
-        "sourceKey": "data",
+        "sourcePath": [
+            "data",
+            "data"
+        ],
         "templateKey": "buildBody",
         "func": "collectionFromKey"
     }
