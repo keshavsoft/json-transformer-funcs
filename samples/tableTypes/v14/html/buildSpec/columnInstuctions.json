@@ -1,0 +1,26 @@
+[
+    {
+        "destinationPath": [
+            "children",
+            1,
+            "children",
+            0,
+            "children"
+        ],
+        "sourceKey": "columns",
+        "templateKey": "buildHeader",
+        "func": "applyTemplate"
+    },
+    {
+        "destinationPath": [
+            "children",
+            3,
+            "children",
+            0,
+            "children"
+        ],
+        "sourceKey": "columns",
+        "templateKey": "buildFooter",
+        "func": "applyTemplate"
+    }
+]
