@@ -1,9 +1,7 @@
-const startFunc = (inTextContent, inElement) => {
-    return inTextContent.replace(/\$\{(\w+)\}/g, (match, key) => {
-        return inElement[key] !== undefined ? inElement[key] : match;
-    });
+import commonReplace from "./commonReplace.js";
 
-    return inTextContent;
+const startFunc = (inTextContent, inElement) => {
+    return commonReplace(inTextContent, inElement);
 };
 
 export default startFunc;

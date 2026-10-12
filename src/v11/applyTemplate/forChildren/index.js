@@ -2,7 +2,7 @@ import parentIndex from "../index.js";
 
 const startFunc = (inTemplateChildren, inElement) => {
     const localTemplateChildren = structuredClone(inTemplateChildren);
-    console.log("localTemplateChildren : ", localTemplateChildren);
+    // console.log("localTemplateChildren : ", localTemplateChildren);
 
     if (!Array.isArray(localTemplateChildren)) return;
 

@@ -4,7 +4,7 @@ const isObject = val => typeof val === 'object' && val !== null && !Array.isArra
 
 const startFunc = (inAttributes, inSource) => {
     if (!isObject(inAttributes)) return;
-
+    // console.log("object : ", inAttributes, inSource);
     let newObject = {};
 
     for (const [key, value] of Object.entries(inAttributes)) {
