@@ -9,7 +9,7 @@
             "data",
             "data"
         ],
-        "templateKey": "buildBody",
+        "templateKey": "buildBodyTr",
         "func": "collectionFromKey"
     }
 ]

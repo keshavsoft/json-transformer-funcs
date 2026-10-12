@@ -1,4 +1,11 @@
 {
+    "buildBodyTr": {
+        "tagName": "tr",
+        "attributes": {
+            "class": "align-middle"
+        },
+        "children": []
+    },
     "buildColGroup": {
         "tagName": "col",
         "attributes": {

@@ -25,12 +25,11 @@ const setByPath = (object, path, value) => {
 
 const getByPath = (path) => {
     const jsonNeeded = path[0];
-    console.log("path : ", path);
 
-    const keys = path.shift();
-    console.log("keys : ", keys);
+    const keys = path.slice(1);
 
     const target = keys.reduce((current, key) => current[key], jsonRegistry[jsonNeeded]);
+
     return target;
 };
 
@@ -60,6 +59,9 @@ const startFunc = (inData, inBase, inSpec) => {
         const sourcePath = instruction.sourcePath;
         const source = getByPath(sourcePath);
         console.log("source : ", source);
+
+        const fromInstruction = functionRegistry[instruction?.func](source, instruction?.templateKey);
+        console.log("fromInstruction : ", fromInstruction);
     })
 
     // let afterRows = runRowInstuctions(tempTableJson);
