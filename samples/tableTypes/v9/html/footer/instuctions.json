@@ -1,0 +1,14 @@
+[
+    {
+        "destinationPath": [
+            "children",
+            3,
+            "children",
+            0,
+            "children"
+        ],
+        "sourceKey": "columns",
+        "templateKey": "buildFooter",
+        "func": "collectionFromKey"
+    }
+]
