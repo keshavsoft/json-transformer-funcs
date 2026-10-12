@@ -25,7 +25,8 @@
                 "tagName": "input",
                 "attributes": {
                     "type": "text",
-                    "placeholder": "${columnName}",
+                    "placeholder": "enter ${columnName}",
+                    "name": "${columnName}",
                     "class": "form-control"
                 }
             }

@@ -1,18 +1,14 @@
-import getContentKey from "../getContentKey.js";
+import parentIndex from "../index.js";
+
+const isObject = val => typeof val === 'object' && val !== null && !Array.isArray(val);
 
 const startFunc = (inAttributes, inSource) => {
+    if (!isObject(inAttributes)) return;
+
     let newObject = {};
 
     for (const [key, value] of Object.entries(inAttributes)) {
-        newObject[key] = value;
-
-        const textContentKey = getContentKey(value);
-
-        if (textContentKey) {
-            if (textContentKey in inSource) {
-                newObject[key] = inSource?.[textContentKey];
-            };
-        };
+        newObject[key] = parentIndex(value, inSource);
     };
 
     return newObject;
