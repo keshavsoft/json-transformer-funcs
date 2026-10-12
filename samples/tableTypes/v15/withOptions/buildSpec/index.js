@@ -2,6 +2,9 @@ import {
     fromCollection, tableBody, buildBody
 } from "../../../../../src/index.js";
 
+import insertSerial from "./insertSerial.js";
+import insertOptions from "./insertOptions.js";
+
 // import data from "./data.json" with { type: "json" };
 import spec from "./spec.json" with { type: "json" };
 import base from "./base.json" with { type: "json" };
@@ -39,14 +42,6 @@ const functionRegistry = {
     fromCollection, tableBody, buildBody
 };
 
-const buildBody1 = (inTarget, inData, inCellSpec) => {
-    inTarget.forEach((loopRow, loopIndex) => {
-        const row = inData?.data[loopIndex];
-        const bodyRow = functionRegistry?.tableBody(inCellSpec, row, inData?.columns);
-        loopRow.children = bodyRow;
-    });
-};
-
 const startFunc = (inData) => {
     jsonRegistry.data = inData;
     console.log("inData : ", inData);
@@ -76,11 +71,10 @@ const startFunc = (inData) => {
 
     buildBody(jsonRegistry.base.children[2].children, inData, jsonRegistry?.spec?.buildBodyCell);
 
+    insertSerial(jsonRegistry?.base, jsonRegistry?.spec);
+    insertOptions(jsonRegistry?.base, jsonRegistry?.spec);
+
     return jsonRegistry.base;
 };
-
-// startFunc();
-// console.log("last ", JSON.stringify(base, null, 2));
-
 
 export default startFunc;
