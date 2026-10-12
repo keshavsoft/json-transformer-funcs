@@ -18,6 +18,27 @@ const functionRegistry = {
         collectionFromKey(source, template),
 };
 
+const buildBody = (inSource, inData) => {
+    const bodyWithCells = inSource.map((element, loopIndex) => {
+        let rowCells = [];
+
+        for (const [key, value] of Object.entries(inData[loopIndex])) {
+            let bodyCell = structuredClone(sampleSpec?.buildBodyCell);
+            // console.log("loopDataRow : ", loopDataRow);
+            bodyCell.textContent = value;
+
+            rowCells.push(bodyCell);
+        };
+
+        return {
+            ...element,
+            children: rowCells
+        };
+    });
+
+    return bodyWithCells;
+};
+
 const startFunc = (inData) => {
 
     let tempTableJson = structuredClone(tableJson);
@@ -33,8 +54,18 @@ const startFunc = (inData) => {
         setByPath(tempTableJson, instruction.destinationPath, result);
     });
 
+    const bodyCells = buildBody(tempTableJson.children[2].children, sampleData?.data);
+    tempTableJson.children[2].children = bodyCells;
+
+    console.log("body 1 : ", bodyCells[0]);
+    console.log("body 2 : ", bodyCells[1]);
+
+    // console.log("tempTableJson : ", tempTableJson.children[2].children);
+
     return tempTableJson;
 };
+
+startFunc(sampleData);
 
 export default startFunc;
 // console.log(JSON.stringify(tempTableJson, null, 2));
@@ -45,3 +76,32 @@ export default startFunc;
 
 // console.log("footer1 : ", tempTableJson.children[3].children.children[0].children);
 // console.log("footer2 : ", tempTableJson.children[3].children.children);
+
+const buildBody1 = (inSource, inData) => {
+    const bodyWithCells = inSource.map(element => {
+        const bodyWithCells = inData.map(loopDataRow => {
+            let rowCells = [];
+
+            for (const [key, value] of Object.entries(loopDataRow)) {
+                let bodyCell = structuredClone(sampleSpec?.buildBodyCell);
+                // console.log("loopDataRow : ", loopDataRow);
+                bodyCell.textContent = value;
+
+                rowCells.push(bodyCell);
+            };
+
+            return {
+                ...loopDataRow,
+                children: rowCells
+            };
+        });
+        // console.log("bodyWithCells : ", bodyWithCells);
+
+        return {
+            ...element,
+            children: bodyWithCells
+        };
+    });
+
+    return bodyWithCells;
+};
