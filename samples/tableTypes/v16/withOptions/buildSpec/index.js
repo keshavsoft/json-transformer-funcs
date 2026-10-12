@@ -11,6 +11,20 @@ import base from "./base.json" with { type: "json" };
 import columnInstuctions from "./columnInstuctions.json" with { type: "json" };
 import rowInstuctions from "./rowInstuctions.json" with { type: "json" };
 
+const findByRole = (node, role) => {
+    if (node?.attributes?.["data-role"] === role) {
+        return node;
+    }
+
+    for (const child of node?.children ?? []) {
+        const result = findByRole(child, role);
+
+        if (result) return result;
+    }
+
+    return null;
+};
+
 const jsonRegistry = {
     data: "",
     base,
