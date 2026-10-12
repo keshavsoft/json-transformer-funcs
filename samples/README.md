@@ -2,7 +2,7 @@
 
 These examples are grouped under [`samples/tableTypes/v12`](tableTypes/v12) and use the repository entry `src/index.js`, which re-exports the current `src/v12` API.
 
-For a compact end-to-end browser example, see [`docs/simple.html`](../docs/simple.html).
+For a compact end-to-end browser example, see [`docs/index.html`](../docs/index.html).
 
 | Sample | What it shows |
 | --- | --- |

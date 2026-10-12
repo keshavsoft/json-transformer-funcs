@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A small browser example using json-transformer-funcs v12.">
-  <title>json-transformer-funcs — v12 example</title>
+  <meta name="description" content="See how json-transformer-funcs v12 turns table columns, rows, and templates into a reusable JSON table tree.">
+  <title>json-transformer-funcs — v12 table builder</title>
   <style>
     :root {
       color-scheme: light;
@@ -23,7 +23,7 @@
     }
 
     main {
-      width: min(760px, 100%);
+      width: min(880px, 100%);
       margin: 0 auto;
       padding: clamp(24px, 5vw, 44px);
       border: 1px solid #e4eaf3;
@@ -43,7 +43,30 @@
     h1 { margin: 12px 0 8px; font-size: clamp(28px, 5vw, 38px); letter-spacing: -.04em; }
     .intro { margin: 0 0 28px; color: #61708a; line-height: 1.6; }
 
+    .purpose {
+      margin: 30px 0;
+      padding: 22px;
+      border: 1px solid #e8edf5;
+      border-radius: 16px;
+      background: #fbfcff;
+    }
+
+    .purpose h2 { margin: 0 0 7px; font-size: 17px; letter-spacing: -.02em; }
+    .purpose > p { margin: 0; color: #66758d; font-size: 14px; line-height: 1.6; }
+
+    .table-parts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 17px;
+    }
+
+    .table-part { padding: 13px; border-radius: 11px; background: #f0f4ff; }
+    .table-part strong { display: block; margin-bottom: 4px; color: #344675; font-size: 13px; }
+    .table-part span { color: #6c7890; font-size: 12px; line-height: 1.45; }
+
     #table-mount { overflow-x: auto; }
+    .loading { margin: 0; padding: 18px 0; color: #78859a; font-size: 14px; }
 
     .demo-table { width: 100%; border-collapse: collapse; text-align: left; }
     .demo-table th { padding: 13px 16px; color: #52627a; background: #f6f8fc; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
@@ -52,16 +75,32 @@
 
     .note { margin: 22px 0 0; color: #78859a; font-size: 13px; line-height: 1.6; }
     .note code { color: #4d5fc4; }
-    .error { color: #a33a3a; }
+
+    @media (max-width: 620px) {
+      body { padding: 20px 12px; }
+      .table-parts { grid-template-columns: 1fr; }
+      .purpose { padding: 17px; }
+    }
   </style>
 </head>
 <body>
   <main>
     <span class="eyebrow">Current implementation · src/v12</span>
-    <h1>Build a table from JSON</h1>
-    <p class="intro">Data and templates go in; a JSON tag tree comes out. A separate renderer turns that tree into this table.</p>
-    <div id="table-mount" aria-live="polite"></div>
-    <p class="note">The table tree is created by <code>tableFromData</code>. <code>json-to-tag</code> handles the browser DOM step.</p>
+    <h1>Build reusable tables from data</h1>
+    <p class="intro">This repo focuses on the table context: turning column definitions and row records into a consistent, template-driven table structure.</p>
+
+    <section class="purpose" aria-labelledby="purpose-heading">
+      <h2 id="purpose-heading">Keep table content separate from table layout</h2>
+      <p><code>tableFromData</code> assembles a JSON tag tree so the same table design can be reused with different datasets. Your app controls the templates and table scaffold; a separate renderer creates the browser elements.</p>
+      <div class="table-parts">
+        <div class="table-part"><strong>Columns</strong><span>Provide the labels used to build the table header.</span></div>
+        <div class="table-part"><strong>Rows</strong><span>Provide record values that become repeated body cells.</span></div>
+        <div class="table-part"><strong>Templates + scaffold</strong><span>Define cell markup, attributes, and the surrounding table structure.</span></div>
+      </div>
+    </section>
+
+    <div id="table-mount" aria-live="polite"><p class="loading">Loading the table preview… Open this page through a local web server to run its modules.</p></div>
+    <p class="note">The transformer returns JSON table structure. <code>json-to-tag</code> handles the separate browser DOM step.</p>
   </main>
 
   <script type="module">

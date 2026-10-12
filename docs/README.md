@@ -6,7 +6,7 @@ This guide describes the implementation under [`src/v12`](../src/v12). The packa
 
 ## The model
 
-The transformer compiles data and JSON tag templates into a JSON tag tree. A separate renderer can turn that tree into browser DOM nodes.
+This repository focuses on table construction. It takes column metadata, row records, reusable header and cell templates, and an outer table scaffold, then assembles a consistent table tree. That separation is useful when table data changes while its layout stays the same, or when an application needs to define its own header, cell, and styling structure. A separate renderer can turn the resulting JSON tag tree into browser DOM nodes.
 
 ```mermaid
 flowchart LR
@@ -248,7 +248,7 @@ document.querySelector("#table-host").appendChild(tableElement);
 
 The renderer is a separate dependency and is not called by this package.
 
-For a small working browser example using the repository's v12 entry, open [`simple.html`](simple.html). Serve the repository over HTTP (for example, with `npm run dev`) so the browser can load its JavaScript modules.
+For a small working browser example using the repository's v12 entry, open [`index.html`](index.html). Serve the repository over HTTP (for example, with `npm run dev`) so the browser can load its JavaScript modules.
 
 ## Current constraints
 

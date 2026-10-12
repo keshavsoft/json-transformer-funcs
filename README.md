@@ -3,9 +3,11 @@
 [![npm version](https://img.shields.io/npm/v/json-transformer-funcs.svg)](https://www.npmjs.com/package/json-transformer-funcs)
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](./package.json)
 
-Build a JSON tag tree from data and reusable templates. The current public entry point re-exports **`src/v12`**; this README documents that implementation only.
+Build reusable JSON table trees from column definitions, row records, tag templates, and a table scaffold. The current public entry point re-exports **`src/v12`**; this README documents that implementation only.
 
 ## What it does
+
+This repository handles the table assembly step between application data and browser rendering. It turns column metadata into header cells, row values into repeated body cells, and places both into a caller-defined table structure. Keeping this step separate makes the same table layout reusable across datasets and lets callers change markup or styling through templates without coupling data processing to the DOM.
 
 Give the transformer three things:
 
@@ -83,7 +85,7 @@ import {
 
 - Public implementation: [`src/v12`](src/v12)
 - Detailed guide: [`docs/README.md`](docs/README.md)
-- Small browser example: [`docs/simple.html`](docs/simple.html)
+- Small browser example: [`docs/index.html`](docs/index.html)
 - v12 sample map: [`samples/README.md`](samples/README.md)
 
 The repository contains other historical source and sample folders. They are not part of this v12 guide.
