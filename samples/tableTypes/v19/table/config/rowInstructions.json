@@ -1,0 +1,19 @@
+[
+    {
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "table-body",
+            "filePath": [
+                "children"
+            ]
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "data"
+            ]
+        },
+        "templateKey": "buildBodyTr",
+        "func": "fromCollection"
+    }
+]
