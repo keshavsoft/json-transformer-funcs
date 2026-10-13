@@ -1,0 +1,53 @@
+[
+    {
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "table-colgroup",
+            "filePath": [
+                "children"
+            ]
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "colGroup"
+            ]
+        },
+        "templateKey": "buildColGroup",
+        "func": "fromCollection"
+    },
+    {
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "table-header-row",
+            "filePath": [
+                "children"
+            ]
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "columns"
+            ]
+        },
+        "templateKey": "buildHeader",
+        "func": "fromCollection"
+    },
+    {
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "table-footer-row",
+            "filePath": [
+                "children"
+            ]
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "columns"
+            ]
+        },
+        "templateKey": "buildFooter",
+        "func": "fromCollection"
+    }
+]

@@ -1,0 +1,38 @@
+[
+    {
+        "destinationRole": "table-colgroup",
+        "destinationPath": [
+            "children"
+        ],
+        "sourcePath": [
+            "data",
+            "columns"
+        ],
+        "templateKey": "buildColGroup",
+        "func": "fromCollection"
+    },
+    {
+        "destinationRole": "table-header-row",
+        "destinationPath": [
+            "children"
+        ],
+        "sourcePath": [
+            "data",
+            "columns"
+        ],
+        "templateKey": "buildHeader",
+        "func": "fromCollection"
+    },
+    {
+        "destinationRole": "table-footer-row",
+        "destinationPath": [
+            "children"
+        ],
+        "sourcePath": [
+            "data",
+            "columns"
+        ],
+        "templateKey": "buildFooter",
+        "func": "fromCollection"
+    }
+]

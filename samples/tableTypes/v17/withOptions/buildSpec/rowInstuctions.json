@@ -1,0 +1,14 @@
+[
+    {
+        "destinationRole": "table-body",
+        "destinationPath": [
+            "children"
+        ],
+        "sourcePath": [
+            "data",
+            "data"
+        ],
+        "templateKey": "buildBodyTr",
+        "func": "fromCollection"
+    }
+]
