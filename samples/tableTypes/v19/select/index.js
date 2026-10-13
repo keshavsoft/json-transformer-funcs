@@ -29,6 +29,8 @@ const runInstructions = instructions => {
 
         if (source) {
             const result = functions[instruction.func](source, spec[instruction.templateKey]);
+            console.log("result : ", result);
+
             writePath(instruction.destinationPath, result);
         } else {
             console.log("   !instruction : ", instruction);
@@ -45,7 +47,7 @@ const startFunc = data => {
 
     runInstructions(columnInstructions);
 
-    buildBody(findByRole(base, "table-body").children, data, spec.buildBodyCell);
+    // buildBody(findByRole(base, "table-body").children, data, spec.buildBodyCell);
 
     // insertSerial(base, spec);
     // insertOptions(base, spec);
@@ -54,12 +56,14 @@ const startFunc = data => {
 };
 
 const table = startFunc({
-    data: [{ name: "Keshav" }],
+    data: [{ name: "Keshav" },
+    { name: "Charan" }
+    ],
     columns: [{ columnName: "name", width: "300px" }]
 });
 
-// console.log("table : ", table);
+console.log("table : ", table);
 
-console.log("head : ", table.children[1].children[0]);
+// console.log("head : ", table.children[1].children[0]);
 
 // export default startFunc;

@@ -2,7 +2,7 @@
     {
         "destinationPath": {
             "fileName": "base",
-            "dataRole": "table-body",
+            "dataRole": "base-select",
             "filePath": [
                 "children"
             ]
@@ -13,7 +13,7 @@
                 "data"
             ]
         },
-        "templateKey": "buildBodyTr",
+        "templateKey": "buildOption",
         "func": "fromCollection"
     }
 ]
