@@ -8,11 +8,10 @@ import base from "./config/base.json" with { type: "json" };
 import columnInstructions from "./config/columnInstructions.json" with { type: "json" };
 import rowInstructions from "./config/rowInstructions.json" with { type: "json" };
 
-// 1. Keep the input, table structure, and templates together as the build context.
+// The story: one select for each column, and one option for each value in that column.
 const registry = { data: {}, base, spec };
 const functions = { fromCollection };
 
-// 2. Apply each instruction: read source, build result, write destination.
 const writePath = (path, value) => {
     const root = path.dataRole
         ? findByRole(registry[path.fileName], path.dataRole)
@@ -29,8 +28,6 @@ const runInstructions = instructions => {
 
         if (source) {
             const result = functions[instruction.func](source, spec[instruction.templateKey]);
-            console.log("result : ", result);
-
             writePath(instruction.destinationPath, result);
         } else {
             console.log("   !instruction : ", instruction);
@@ -39,13 +36,44 @@ const runInstructions = instructions => {
     });
 };
 
-// 3. Complete the table and return its JSON specification.
+const buildOptionsForColumn = (columnName, rows) => {
+    const optionTemplate = structuredClone(spec.buildOption);
+
+    return rows.map(row => {
+        const option = structuredClone(optionTemplate);
+        const value = row[columnName];
+
+        option.textContent = value;
+        option.attributes.value = value;
+
+        return option;
+    });
+};
+
+const buildSelectForColumn = (column, rows) => {
+    const select = structuredClone(spec.buildSelect);
+    const columnName = column.columnName;
+
+    select.attributes.name = columnName;
+    select.attributes.id = columnName;
+    select.children = buildOptionsForColumn(columnName, rows);
+
+    return select;
+};
+
+const buildSelectsFromColumns = ({ data, columns }) => {
+    return columns.map(column => buildSelectForColumn(column, data));
+};
+
 const startFunc = data => {
     registry.data = data;
 
     runInstructions(rowInstructions);
-
     runInstructions(columnInstructions);
+
+    const selects = buildSelectsFromColumns(data);
+    const baseSelect = findByRole(base, "base-select");
+    baseSelect.children = selects;
 
     return base;
 };
@@ -58,7 +86,7 @@ const table = startFunc({
 });
 
 console.log("table : ", table);
-
-// console.log("head : ", table.children[1].children[0]);
+console.log("first select : ", table.children[0]);
+console.log("first option : ", table.children[0].children[0]);
 
 // export default startFunc;
