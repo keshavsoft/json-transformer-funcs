@@ -15,8 +15,11 @@ const startFunc = (inTemplate, inRowData, inColumns) => {
 
         if (loopInsideSpec) {
             let bodyCell = structuredClone(loopInsideSpec);
+            console.log("bodyCell-------- : ", bodyCell);
 
-            bodyCell.textContent = localRowData[element.columnName];
+            if ("textContent" in bodyCell) {
+                bodyCell.textContent = localRowData[element.columnName];
+            };
 
             rowCells.push(bodyCell);
         };

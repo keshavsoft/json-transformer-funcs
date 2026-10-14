@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V3 Table Spec Test - Modal on Click</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    crossorigin="anonymous">
+</head>
+
+<body class="bg-light">
+  <main class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div>
+        <h1 style="font-size:1.5rem" class="mb-1">V3 Table Spec Test</h1>
+        <p class="text-muted small mb-0">
+          Click <code>show</code> on any row to dynamically build and render its <code>batches</code> in a modal popup.
+        </p>
+      </div>
+    </div>
+
+    <div id="dom-render-container">
+    </div>
+  </main>
+
+  <!-- Modal Pop-up for Batches (Lean DOM Shell) -->
+  <div class="modal fade" id="batchModal" tabindex="-1" aria-labelledby="batchModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content shadow">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title" id="batchModalTitle">Batches</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-3" id="batchModalBody">
+        </div>
+        <div class="modal-footer py-2">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
+
+  <script type="module">
+    import "https://keshavsoft.github.io/json-renderers-build/docs/dist/v15/min.js";
+    import "https://keshavsoft.github.io/json-to-tag/dist/v9/min.js";
+    import data from "./batches.json" with { type: "json" };
+    import { saveClick } from "./methods/saveClick.js";
+    import { rowOptionsClick } from "./methods/rowOptionsClick.js";
+    import { cellButtonClick } from "./methods/cellButtonClick.js";
+
+    const container = document.getElementById("dom-render-container");
+    const modalEl = document.getElementById("batchModal");
+    const batchModal = new bootstrap.Modal(modalEl);
+    const modalTitle = document.getElementById("batchModalTitle");
+    const modalBody = document.getElementById("batchModalBody");
+
+    const start = async () => {
+      try {
+        const spec = window.ks.jsonRenderersBuild.renderToDom({
+          type: "table",
+          columns: [{ columnName: "itemName" }, { columnName: "baseUnit" }],
+          data,
+          options: {
+            showSerial: true,
+            showOptions: [{ label: "show", type: "button" }],
+            showFooter: true,
+            showFooterSave: true
+          }
+        });
+        container.appendChild(window.ks.jsonToTag.buildSpecElement(spec));
+
+        // Delegate events at the container; behavior lives in separate methods.
+        container.addEventListener("click", event => {
+          const button = event.target.closest("button");
+          if (!button || !container.contains(button)) return;
+          const label = button.textContent.trim().toLowerCase();
+          const tr = button.closest("tr");
+          if (!tr) return;
+
+          if (label === "save") {
+            saveClick({ ...event, currentTarget: button });
+          } else if (label === "show") {
+            cellButtonClick({ ...event, currentTarget: button }, { data, modalTitle, modalBody, batchModal });
+          } else if (label === "options") {
+            rowOptionsClick({ ...event, currentTarget: button });
+          }
+        });
+      } catch (err) {
+        console.error("Render error:", err);
+        container.innerHTML = `<div class="alert alert-danger font-monospace small mb-0"></div>`;
+        container.firstElementChild.textContent = err.message;
+      }
+    };
+
+    start();
+  </script>
+</body>
+
+</html>
