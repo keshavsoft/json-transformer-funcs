@@ -1,4 +1,4 @@
-import findByRole from "../findByRole/index.js";
+import findByRole from "./index.js";
 
 const statFunc = (node, role) => {
     if (node?.attributes?.["data-role"] === role) return node;
