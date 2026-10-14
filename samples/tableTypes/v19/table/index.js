@@ -50,15 +50,18 @@ const startFunc = data => {
 
     buildBody(findByRole(base, "table-body").children, data, spec.buildBodyCell);
 
-    // insertSerial(base, spec);
-    // insertOptions(base, spec);
+    insertSerial(base, spec);
+    insertOptions(base, spec);
 
     return base;
 };
 
 const table = startFunc({
     data,
-    columns: [{ columnName: "name", width: "300px" }]
+    columns: [{ columnName: "itemName", width: "300px" },
+    { columnName: "baseUnit", width: "200px" },
+    { columnName: "batches", width: "100px" }
+    ]
 });
 
 // console.log("table : ", table);
