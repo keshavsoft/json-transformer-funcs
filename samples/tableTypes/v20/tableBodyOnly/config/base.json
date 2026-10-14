@@ -1,0 +1,15 @@
+{
+    "tagName": "table",
+    "attributes": {
+        "class": "table table-hover table-striped align-middle border mb-0"
+    },
+    "children": [
+        {
+            "tagName": "tbody",
+            "attributes": {
+                "data-role": "table-body"
+            },
+            "children": []
+        }
+    ]
+}

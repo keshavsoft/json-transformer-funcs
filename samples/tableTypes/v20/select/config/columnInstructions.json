@@ -1,0 +1,20 @@
+[
+    {
+        "narration": "Build one select control for each column and fill it with option values from the data rows.",
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "base-select",
+            "filePath": [
+                "children"
+            ]
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "columns"
+            ]
+        },
+        "templateKey": "buildSelect",
+        "func": "buildControlForColumn"
+    }
+]

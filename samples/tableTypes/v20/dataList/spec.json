@@ -1,0 +1,17 @@
+{
+  "buildOption": {
+    "tagName": "option",
+    "textContent": "${rowValue}",
+    "attributes": {
+      "value": "${rowValue}"
+    }
+  },
+  "buildDataList": {
+    "tagName": "datalist",
+    "attributes": {
+      "id": "${columnName}",
+      "data-name": "${columnName}"
+    },
+    "children": []
+  }
+}
