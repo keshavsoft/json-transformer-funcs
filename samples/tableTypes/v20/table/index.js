@@ -1,6 +1,6 @@
 import {
     fromCollection, tableBody, buildBody,
-    insertSerial, findByRole, resolvePath, applyTemplate
+    findByRole, resolvePath, applyTemplate
 } from "json-transformer-funcs";
 
 import spec from "./spec.json" with { type: "json" };
@@ -8,6 +8,7 @@ import base from "./config/base.json" with { type: "json" };
 
 import columnInstructions from "./config/columnInstructions.json" with { type: "json" };
 import rowInstructions from "./config/rowInstructions.json" with { type: "json" };
+import serialInstructions from "./config/serialInstructions.json" with { type: "json" };
 import optionsInstructions from "./config/optionsInstructions.json" with { type: "json" };
 
 import data from "./batches.json" with { type: "json" };
@@ -47,7 +48,9 @@ const startFunc = data => {
 
     buildBody(findByRole(base, "table-body").children, data, spec);
 
-    insertSerial(base, spec);
+    if (data.serial) {
+        runInstructions(serialInstructions);
+    }
 
     if (data.options) {
         runInstructions(optionsInstructions);
@@ -70,6 +73,12 @@ const table = startFunc({
         }
     }
     ],
+    serial: {
+        col: { width: "50px" },
+        header: { columnName: "#" },
+        body: {},
+        footer: {}
+    },
     options: {
         col: { width: "100px" },
         header: { columnName: "options" },

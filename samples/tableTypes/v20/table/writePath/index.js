@@ -21,6 +21,13 @@ const actions = {
         parent[key].forEach(row => {
             row.children.unshift(...structuredClone(toArray(value)));
         });
+    },
+    unshiftSerialToRows: (parent, key, value) => {
+        parent[key].forEach((row, rowIndex) => {
+            const item = structuredClone(value);
+            item.textContent = rowIndex + 1;
+            row.children.unshift(item);
+        });
     }
 };
 
