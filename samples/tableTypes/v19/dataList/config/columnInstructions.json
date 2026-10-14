@@ -1,0 +1,20 @@
+[
+    {
+        "narration": "Build one datalist for each column and attach option values from the matching field in every row.",
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "base-datalist",
+            "filePath": [
+                "children"
+            ]
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "columns"
+            ]
+        },
+        "templateKey": "buildDataList",
+        "func": "buildControlForColumn"
+    }
+]

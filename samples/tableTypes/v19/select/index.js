@@ -1,38 +1,63 @@
 import {
     fromCollection,
-    findByRole
+    findByRole, resolvePath
 } from "json-transformer-funcs";
 
 import spec from "./spec.json" with { type: "json" };
 import base from "./config/base.json" with { type: "json" };
+import columnInstructions from "./config/columnInstructions.json" with { type: "json" };
 
-// Small adapter: convert one column into one select, using the reusable source function.
-const buildOptionsForColumn = (columnName, rows) => {
-    const source = rows.map(row => ({ rowValue: row[columnName] }));
-    return fromCollection(source, spec.buildOption);
+const registry = { data: {}, base, spec };
+const functions = {
+    fromCollection,
+    buildControlForColumn: (columns, template) => {
+        return columns.map(column => {
+            const select = structuredClone(template);
+            const columnName = column.columnName;
+
+            select.attributes = {
+                ...select.attributes,
+                id: columnName,
+                name: columnName
+            };
+            select.children = fromCollection(
+                registry.data.data.map(row => ({ rowValue: row[columnName] })),
+                spec.buildOption
+            );
+
+            return select;
+        });
+    }
 };
 
-const buildSelectForColumn = (column, rows) => {
-    const select = structuredClone(spec.buildSelect);
-    const columnName = column.columnName;
+const writePath = (path, value) => {
+    const root = path.dataRole
+        ? findByRole(registry[path.fileName], path.dataRole)
+        : registry[path.fileName];
 
-    select.attributes = {
-        ...select.attributes,
-        id: columnName,
-        name: columnName
-    };
-    select.children = buildOptionsForColumn(columnName, rows);
-
-    return select;
+    const keys = [...(path.filePath ?? [])];
+    const lastKey = keys.pop();
+    const parent = keys.reduce((current, key) => current[key], root);
+    parent[lastKey] = value;
 };
 
-const buildSelectsFromColumns = ({ data, columns }) => {
-    return columns.map(column => buildSelectForColumn(column, data));
+const runInstructions = instructions => {
+    instructions.forEach(instruction => {
+        const source = resolvePath(registry, instruction.sourcePath);
+
+        if (source) {
+            const result = functions[instruction.func](source, spec[instruction.templateKey]);
+            writePath(instruction.destinationPath, result);
+        } else {
+            console.log("!instruction : ", instruction);
+            console.log("!source : ", source);
+        }
+    });
 };
 
 const startFunc = data => {
-    const selectGroup = findByRole(base, "base-select");
-    selectGroup.children = buildSelectsFromColumns(data);
+    registry.data = data;
+    runInstructions(columnInstructions);
     return base;
 };
 

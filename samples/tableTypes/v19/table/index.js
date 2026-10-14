@@ -5,8 +5,11 @@ import {
 
 import spec from "./spec.json" with { type: "json" };
 import base from "./config/base.json" with { type: "json" };
+
 import columnInstructions from "./config/columnInstructions.json" with { type: "json" };
 import rowInstructions from "./config/rowInstructions.json" with { type: "json" };
+
+import data from "./batches.json" with { type: "json" };
 
 // 1. Keep the input, table structure, and templates together as the build context.
 const registry = { data: {}, base, spec };
@@ -54,12 +57,13 @@ const startFunc = data => {
 };
 
 const table = startFunc({
-    data: [{ name: "Keshav" }],
+    data,
     columns: [{ columnName: "name", width: "300px" }]
 });
 
 // console.log("table : ", table);
 
-console.log("head : ", table.children[1].children[0]);
+// console.log("head : ", table.children[1].children[0]);
+console.log("body : ", table.children[2].children[0]);
 
 // export default startFunc;

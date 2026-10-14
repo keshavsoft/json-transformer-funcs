@@ -1,5 +1,6 @@
 [
     {
+        "narration": "Create one table row for each record and place it into the table body container.",
         "destinationPath": {
             "fileName": "base",
             "dataRole": "table-body",
