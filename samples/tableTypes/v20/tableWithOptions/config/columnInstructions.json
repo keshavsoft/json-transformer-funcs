@@ -1,5 +1,6 @@
 [
     {
+        "narration": "Build the column widths for the table using the configured columns.",
         "destinationPath": {
             "fileName": "base",
             "dataRole": "table-colgroup",
@@ -10,13 +11,14 @@
         "sourcePath": {
             "fileName": "data",
             "filePath": [
-                "colGroup"
+                "columns"
             ]
         },
         "templateKey": "buildColGroup",
         "func": "fromCollection"
     },
     {
+        "narration": "Build the table header row from the column metadata.",
         "destinationPath": {
             "fileName": "base",
             "dataRole": "table-header-row",
@@ -34,6 +36,7 @@
         "func": "fromCollection"
     },
     {
+        "narration": "Build the table footer row from the column metadata.",
         "destinationPath": {
             "fileName": "base",
             "dataRole": "table-footer-row",

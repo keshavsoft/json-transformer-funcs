@@ -1,7 +1,0 @@
-{
-    "tagName": "select",
-    "attributes": {
-        "data-role": "base-select"
-    },
-    "children": []
-}

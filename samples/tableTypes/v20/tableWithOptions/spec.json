@@ -47,6 +47,21 @@
             "class": "btn btn-primary btn-sm"
         }
     },
+    "buttonCell": {
+        "tagName": "td",
+        "attributes": {
+            "class": "py-2 px-3 text-center"
+        },
+        "children": [
+            {
+                "tagName": "button",
+                "textContent": "${columnName}",
+                "attributes": {
+                    "class": "btn btn-primary btn-sm"
+                }
+            }
+        ]
+    },
     "buildOption": {
         "tagName": "option",
         "textContent": "${rowValue}",

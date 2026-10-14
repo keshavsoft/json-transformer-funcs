@@ -1,8 +1,9 @@
 [
     {
+        "narration": "Create one table row for each record and place it into the table body container.",
         "destinationPath": {
             "fileName": "base",
-            "dataRole": "base-select",
+            "dataRole": "table-body",
             "filePath": [
                 "children"
             ]
@@ -13,7 +14,7 @@
                 "data"
             ]
         },
-        "templateKey": "buildOption",
+        "templateKey": "buildBodyTr",
         "func": "fromCollection"
     }
 ]

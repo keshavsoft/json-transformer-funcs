@@ -72,19 +72,7 @@ const table = startFunc({
             bodyCell: "buttonCell"
         }
     }
-    ],
-    serial: {
-        col: { width: "50px" },
-        header: { columnName: "#" },
-        body: {},
-        footer: {}
-    },
-    options: {
-        col: { width: "100px" },
-        header: { columnName: "options" },
-        body: { columnName: "show" },
-        footer: { columnName: "save" }
-    }
+    ]
 });
 
 // console.log("table : ", table);
