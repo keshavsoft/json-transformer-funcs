@@ -48,7 +48,7 @@ const startFunc = data => {
 
     runInstructions(columnInstructions);
 
-    buildBody(findByRole(base, "table-body").children, data, spec.buildBodyCell);
+    buildBody(findByRole(base, "table-body").children, data, spec);
 
     insertSerial(base, spec);
     insertOptions(base, spec);
@@ -58,9 +58,17 @@ const startFunc = data => {
 
 const table = startFunc({
     data,
-    columns: [{ columnName: "itemName", width: "300px" },
+    columns: [{
+        columnName: "itemName", width: "300px", template: {
+            bodyCell: "buildBodyCell"
+        }
+    },
     { columnName: "baseUnit", width: "200px" },
-    { columnName: "batches", width: "100px" }
+    {
+        columnName: "batches", width: "100px", template: {
+            bodyCell: "button"
+        }
+    }
     ]
 });
 
