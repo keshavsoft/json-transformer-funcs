@@ -1,5 +1,5 @@
 {
-    "tagName": "select",
+    "tagName": "div",
     "attributes": {
         "data-role": "base-select"
     },

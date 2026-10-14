@@ -1,0 +1,19 @@
+[
+    {
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "base-select",
+            "filePath": [
+                "children"
+            ]
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "data"
+            ]
+        },
+        "templateKey": "buildOption",
+        "func": "fromCollection"
+    }
+]
