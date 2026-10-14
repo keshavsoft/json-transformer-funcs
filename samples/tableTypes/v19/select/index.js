@@ -1,6 +1,6 @@
 import {
-    fromCollection, tableBody, buildBody,
-    insertSerial, insertOptions, findByRole, resolvePath
+    fromCollection,
+    findByRole, resolvePath
 } from "json-transformer-funcs";
 
 import spec from "./spec.json" with { type: "json" };
@@ -10,7 +10,7 @@ import rowInstructions from "./config/rowInstructions.json" with { type: "json" 
 
 // 1. Keep the input, table structure, and templates together as the build context.
 const registry = { data: {}, base, spec };
-const functions = { fromCollection, tableBody, buildBody };
+const functions = { fromCollection };
 
 // 2. Apply each instruction: read source, build result, write destination.
 const writePath = (path, value) => {
@@ -47,19 +47,14 @@ const startFunc = data => {
 
     runInstructions(columnInstructions);
 
-    // buildBody(findByRole(base, "table-body").children, data, spec.buildBodyCell);
-
-    // insertSerial(base, spec);
-    // insertOptions(base, spec);
-
     return base;
 };
 
 const table = startFunc({
-    data: [{ name: "Keshav" },
-    { name: "Charan" }
+    data: [{ name: "Keshav", age: 26 },
+    { name: "Charan", age: 28 }
     ],
-    columns: [{ columnName: "name", width: "300px" }]
+    columns: [{ columnName: "name", width: "300px" }, { columnName: "age", width: "100px" }]
 });
 
 console.log("table : ", table);

@@ -5,7 +5,7 @@ import commonReplace from "./commonReplace.js";
 
 const startFunc = (inTemplate, inElement) => {
     const localClonedTemplate = structuredClone(inTemplate);
-    // console.log("inTemplate : ", inTemplate, inElement);
+    console.log("applytemplate : ", inTemplate, inElement);
 
     if (typeof localClonedTemplate === "string") return commonReplace(localClonedTemplate, inElement);
     if (localClonedTemplate === null || typeof localClonedTemplate !== "object") return localClonedTemplate;
