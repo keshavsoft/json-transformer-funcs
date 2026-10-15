@@ -1,0 +1,82 @@
+[
+    {
+        "narration": "Prepend the serial column width to the table colgroup.",
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "table-colgroup",
+            "filePath": [
+                "children"
+            ],
+            "action": "unshift"
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "serial",
+                "col"
+            ]
+        },
+        "templateKey": "buildColGroup",
+        "func": "applyTemplate"
+    },
+    {
+        "narration": "Prepend the serial header cell to the table header row.",
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "table-header-row",
+            "filePath": [
+                "children"
+            ],
+            "action": "unshift"
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "serial",
+                "header"
+            ]
+        },
+        "templateKey": "buildHeader",
+        "func": "applyTemplate"
+    },
+    {
+        "narration": "Prepend the serial number cell into each table body row.",
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "table-body",
+            "filePath": [
+                "children"
+            ],
+            "action": "unshiftSerialToRows"
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "serial",
+                "body"
+            ]
+        },
+        "templateKey": "buildBodyCell",
+        "func": "applyTemplate"
+    },
+    {
+        "narration": "Prepend an empty cell into the table footer row.",
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "table-footer-row",
+            "filePath": [
+                "children"
+            ],
+            "action": "unshift"
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "serial",
+                "footer"
+            ]
+        },
+        "templateKey": "buildBodyCell",
+        "func": "applyTemplate"
+    }
+]
