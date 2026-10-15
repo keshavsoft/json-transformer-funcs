@@ -1,6 +1,6 @@
 import {
     fromCollection, resolvePath, twoDimensional
-} from "../../../../src/v23/index.js";
+} from "../../../../src/v24/index.js";
 
 import spec from "./spec.json" with { type: "json" };
 import base from "./config/base.json" with { type: "json" };
@@ -35,7 +35,11 @@ const runInstructions = instructions => {
 
 const runInstructions2 = instructions => {
     instructions.forEach(instruction => {
-        const result = functions[instruction.func](registry.data.columns, registry.data.data, spec["buildBodyTr"], spec["buildBodyCell"]);
+        const result = functions[instruction.func](
+            registry.data.columns,
+            registry.data.data,
+            spec
+        );
         writePath(registry, instruction.destinationPath, result);
     });
 };
@@ -54,17 +58,26 @@ const table = startFunc({
     data: batches,
     columns: [{
         columnName: "itemName", width: "300px", template: {
-            bodyCell: "buildBodyCell"
+            body: {
+                tr: "buildBodyTr",
+                cell: "buildBodyCell"
+            }
         }
     },
     {
         columnName: "baseUnit", width: "200px", template: {
-            bodyCell: "buildBodyCell"
+            body: {
+                tr: "buildBodyTr",
+                cell: "buildBodyCell"
+            }
         }
     },
     {
         columnName: "batches", width: "100px", template: {
-            bodyCell: "buttonCell"
+            body: {
+                tr: "buildBodyTr",
+                cell: "buttonCell"
+            }
         }
     }
     ]

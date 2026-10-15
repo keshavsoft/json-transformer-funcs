@@ -1,15 +1,12 @@
 import {
-    fromCollection, tableBody, buildBody,
-    findByRole, resolvePath, applyTemplate
+    fromCollection, resolvePath, twoDimensional
 } from "../../../../src/v23/index.js";
 
 import spec from "./spec.json" with { type: "json" };
 import base from "./config/base.json" with { type: "json" };
 
-import columnInstructions from "./config/columnInstructions.json" with { type: "json" };
-import rowInstructions from "./config/rowInstructions.json" with { type: "json" };
-import serialInstructions from "./config/serialInstructions.json" with { type: "json" };
-import optionsInstructions from "./config/optionsInstructions.json" with { type: "json" };
+import singleInstructions from "./instructions/single.json" with { type: "json" };
+import twoDimensionalInstructions from "./instructions/double.json" with { type: "json" };
 
 import batches from "./batches.json" with { type: "json" };
 
@@ -18,10 +15,7 @@ import writePath from "./writePath/index.js";
 // 1. Keep the input, table structure, and templates together as the build context.
 const registry = { data: {}, base, spec };
 const functions = {
-    fromCollection,
-    tableBody,
-    buildBody,
-    applyTemplate: (inSource, inTemplate) => applyTemplate(inTemplate, inSource)
+    fromCollection, twoDimensional
 };
 
 // 2. Apply each instruction: read source, build result, write destination.
@@ -39,27 +33,22 @@ const runInstructions = instructions => {
     });
 };
 
+const runInstructions2 = instructions => {
+    instructions.forEach(instruction => {
+        const result = functions[instruction.func](registry.data.columns, registry.data.data, spec["buildBodyTr"], spec["buildBodyCell"]);
+        writePath(registry, instruction.destinationPath, result);
+    });
+};
+
 // 3. Complete the table and return its JSON specification.
 const startFunc = data => {
     registry.data = data;
 
-    runInstructions(rowInstructions);
-
-    runInstructions(columnInstructions);
-
-    buildBody(findByRole(base, "table-body").children, data, spec);
-
-    // if (data.serial) {
-    //     runInstructions(serialInstructions);
-    // };
-
-    // if (data.options) {
-    //     runInstructions(optionsInstructions);
-    // };
+    runInstructions(singleInstructions);
+    runInstructions2(twoDimensionalInstructions);
 
     return base;
 };
-
 
 const table = startFunc({
     data: batches,
@@ -81,7 +70,9 @@ const table = startFunc({
     ]
 });
 
-// console.log("colgroup : ", JSON.stringify(table.children[0], null, 2));
-// console.log("header : ", JSON.stringify(table.children[1], null, 2));
-console.log("body row 0 : ", JSON.stringify(table.children[2].children[0], null, 2));
+console.log("colgroup : ", JSON.stringify(table.children[0], null, 2));
+console.log("header : ", JSON.stringify(table.children[1], null, 2));
+
+console.log("body row 0 : ", JSON.stringify(table.children[2].children, null, 2));
+
 // console.log("footer : ", JSON.stringify(table.children[3], null, 2));

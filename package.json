@@ -1,6 +1,6 @@
 {
   "name": "json-transformer-funcs",
-  "version": "1.20.1",
+  "version": "1.24.1",
   "description": "Pure JSON Specification Compiler with jsonToSpec namespace: (structure, data) -> Spec JSON",
   "main": "./src/index.js",
   "module": "./src/index.js",
@@ -51,5 +51,10 @@
   "homepage": "https://keshavsoft.github.io/json-transformer-funcs/",
   "devDependencies": {
     "vite": "^6.2.0"
+  },
+  "dependencies": {
+    "json-transformer-funcs-one-dimension": "^1.0.0",
+    "json-transformer-funcs-primitive": "^1.0.0",
+    "json-transformer-funcs-two-dimensions": "^0.0.0-stage"
   }
 }
