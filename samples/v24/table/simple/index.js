@@ -1,6 +1,6 @@
 import {
     fromCollection, resolvePath, twoDimensional
-} from "../../../../src/v24/index.js";
+} from "../../../../src/index.js";
 
 import spec from "./spec.json" with { type: "json" };
 import base from "./config/base.json" with { type: "json" };

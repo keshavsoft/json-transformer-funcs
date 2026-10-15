@@ -1,0 +1,38 @@
+[
+    {
+        "narration": "Build the column widths for the table using the configured columns.",
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "table-colgroup",
+            "filePath": [
+                "children"
+            ]
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "columns"
+            ]
+        },
+        "templateKey": "buildColGroup",
+        "func": "fromCollection"
+    },
+    {
+        "narration": "Build the header row for the table using the configured columns.",
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "table-header-row",
+            "filePath": [
+                "children"
+            ]
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "columns"
+            ]
+        },
+        "templateKey": "buildHeader",
+        "func": "fromCollection"
+    }
+]

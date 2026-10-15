@@ -1,0 +1,15 @@
+[
+  {
+    "itemName": "0.09/30mm",
+    "baseUnit": "kgs",
+    "batches": [
+      {
+        "godownName": "Main Location",
+        "batchName": "Navratan-Rs.1210/-",
+        "openingBalance": "-9.250 kgs",
+        "openingValue": 11100,
+        "openingRate": "1200.00/kgs"
+      }
+    ]
+  }
+]
