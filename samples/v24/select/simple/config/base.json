@@ -1,0 +1,10 @@
+{
+    "tagName": "select",
+    "attributes": {
+        "data-role": "select-control",
+        "id": "ledgerSelect",
+        "name": "ledgerSelect",
+        "class": "form-select"
+    },
+    "children": []
+}

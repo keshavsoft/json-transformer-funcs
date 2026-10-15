@@ -1,0 +1,9 @@
+{
+    "buildOption": {
+        "tagName": "option",
+        "textContent": "${rowValue}",
+        "attributes": {
+            "value": "${rowValue}"
+        }
+    }
+}

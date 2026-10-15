@@ -1,0 +1,20 @@
+[
+    {
+        "narration": "Build option elements for the datalist from items.",
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "datalist-control",
+            "filePath": [
+                "children"
+            ]
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "items"
+            ]
+        },
+        "templateKey": "buildOption",
+        "func": "fromCollection"
+    }
+]

@@ -1,0 +1,20 @@
+[
+    {
+        "narration": "Build option elements from the list of items.",
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "options-container",
+            "filePath": [
+                "children"
+            ]
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "items"
+            ]
+        },
+        "templateKey": "buildOption",
+        "func": "fromCollection"
+    }
+]

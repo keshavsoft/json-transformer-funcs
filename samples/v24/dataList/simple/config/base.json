@@ -1,0 +1,8 @@
+{
+    "tagName": "datalist",
+    "attributes": {
+        "data-role": "datalist-control",
+        "id": "itemsList"
+    },
+    "children": []
+}
