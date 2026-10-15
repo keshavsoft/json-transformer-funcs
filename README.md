@@ -1,34 +1,10 @@
 # json-transformer-funcs
 
-[![npm version](https://img.shields.io/npm/v/json-transformer-funcs.svg)](https://www.npmjs.com/package/json-transformer-funcs)
-[![license](https://img.shields.io/badge/license-MIT-green.svg)](./package.json)
+> One registry. One runner. Three engines. Any HTML element — built from pure JSON.
 
-Build reusable JSON table trees from column definitions, row records, tag templates, and a table scaffold. The current public entry point re-exports **`src/v12`**; this README documents that implementation only.
+[![npm](https://img.shields.io/npm/v/json-transformer-funcs)](https://www.npmjs.com/package/json-transformer-funcs)
 
-## What it does
-
-This repository handles the table assembly step between application data and browser rendering. It turns column metadata into header cells, row values into repeated body cells, and places both into a caller-defined table structure. Keeping this step separate makes the same table layout reusable across datasets and lets callers change markup or styling through templates without coupling data processing to the DOM.
-
-Give the transformer three things:
-
-1. **Data** — column definitions and rows.
-2. **Templates** — JSON objects that describe tags and contain `${name}` placeholders.
-3. **A table scaffold** — the outer `table`, `thead`, and `tbody` structure.
-
-`tableFromData` fills the header and body templates and returns a new JSON tree. It does not create browser elements. To render the result, pass the tree to a renderer such as [`json-to-tag`](https://github.com/keshavsoft/json-to-tag).
-
-```text
-data + templates + table scaffold
-                 │
-                 ▼
-            tableFromData
-                 │
-                 ▼
-          JSON tag tree
-                 │
-                 ▼
-       optional DOM renderer
-```
+---
 
 ## Install
 
@@ -36,60 +12,173 @@ data + templates + table scaffold
 npm install json-transformer-funcs
 ```
 
-The library uses ES modules and `structuredClone`.
+---
 
-## Quick start
+## The Idea
 
-```js
-import { tableFromData } from "json-transformer-funcs";
+Every HTML element is a JSON object: `{ tagName, attributes, textContent, children }`.
+Every list of HTML elements is a JSON array.
 
-const inData = {
-  columns: [
-    { columnName: "Product" },
-    { columnName: "Price" }
-  ],
-  rows: [
-    { product: "Drill bit", price: "$12.50" },
-    { product: "End mill", price: "$89.00" }
-  ]
-};
+If you can describe the shape of an element in JSON — this library can build it from data.
 
-const tableTree = tableFromData({ inData });
+No DOM. No template language. No framework. Pure data in, pure JSON tree out.
 
-console.log(tableTree.children[0].children[0].children);
-// [
-//   { tagName: "th", textContent: "Product" },
-//   { tagName: "th", textContent: "Price" }
-// ]
-```
+---
 
-The default templates use `${columnName}` for headers and `${rowValue}` for body cells. The default table scaffold supplies a `thead` and `tbody`. See the [v12 guide and API reference](docs/README.md) for custom templates, exact input requirements, and current limitations.
+## The Three Engines
 
-## Public API
-
-```js
+```javascript
 import {
-  tableFromData,
-  buildTable,
-  collectionFromKey,
-  collectionFromInternal,
-  collectionFromArray,
-  defaultSpec,
-  defaultTable
+    fromCollection,  // one-dimension  — array of elements
+    twoDimensional,  // two-dimensions — grid of rows x cells
+    resolvePath,     // path reader
+    findByRole       // node finder
 } from "json-transformer-funcs";
 ```
 
-`buildTable` is an alias of `tableFromData`. `defaultSpec` and `defaultTable` are the built-in header/body templates and table scaffold. `collectionFromArray` is exported but is not implemented yet; it currently returns `undefined`.
+| Package | Function | Responsibility |
+| :--- | :--- | :--- |
+| `json-transformer-funcs-primitive` | `applyTemplate` | One element from one data object |
+| `json-transformer-funcs-one-dimension` | `fromCollection` | A list of elements from a list of objects |
+| `json-transformer-funcs-two-dimensions` | `twoDimensional` | A grid of rows x cells from columns x data rows |
 
-## v12 source and examples
+---
 
-- Public implementation: [`src/v12`](src/v12)
-- Three separate HTML guides, linked from [`docs/index.html`](docs/index.html)
-- Detailed API reference: [`docs/README.md`](docs/README.md)
-- v12 sample map: [`samples/README.md`](samples/README.md)
+## The Dimension Rule
 
-The repository contains other historical source and sample folders. They are not part of this v12 guide.
+| You have | You use | You get |
+| :--- | :--- | :--- |
+| One object, one template | `applyTemplate` | One node |
+| An array of objects, one template | `fromCollection` | An array of nodes |
+| Columns x data rows, a spec | `twoDimensional` | `<tr>` rows each with `<td>` cells |
+
+`<col>`, `<th>`, `<option>` are 1-D — all produced by `fromCollection`.
+`<tr>[<td>]` is 2-D — produced by `twoDimensional`.
+The container (`<table>`, `<select>`, `<datalist>`) lives in `base.json` — you configure it, not compute it.
+
+---
+
+## The Four Core Files
+
+Every sample in v24 is built from the same four files:
+
+### 1. `spec.json` — The Template Library
+
+Named templates. Each key is a reusable element shape with `${placeholder}` slots.
+
+```json
+{
+    "buildColGroup":  { "tagName": "col",    "attributes": { "width": "${width}" } },
+    "buildHeader":    { "tagName": "th",     "textContent": "${columnName}" },
+    "buildBodyCell":  { "tagName": "td",     "textContent": "${rowValue}" },
+    "buttonCell":     { "tagName": "td",     "children": [{ "tagName": "button", "textContent": "${agg:count}" }] },
+    "buildOption":    { "tagName": "option", "textContent": "${rowValue}", "attributes": { "value": "${rowValue}" } }
+}
+```
+
+### 2. `config/base.json` — The Structural Skeleton
+
+Pre-built output shape — empty. Results are written into it using `data-role` addressing.
+
+```json
+{
+    "tagName": "table",
+    "children": [
+        { "tagName": "colgroup", "attributes": { "data-role": "table-colgroup" }, "children": [] },
+        { "tagName": "thead",    "attributes": { "data-role": "table-header"  }, "children": [
+            { "tagName": "tr",   "attributes": { "data-role": "table-header-row" }, "children": [] }
+        ]},
+        { "tagName": "tbody",    "attributes": { "data-role": "table-body"    }, "children": [] }
+    ]
+}
+```
+
+For `<select>` or `<datalist>`, the base is simply the container node:
+```json
+{ "tagName": "select", "attributes": { "data-role": "select-control", "id": "ledgerSelect" }, "children": [] }
+```
+
+### 3. `instructions/single.json` — The Build Plan
+
+Declarative steps. Each step names: source path, function, template key, destination path.
+
+```json
+[
+    {
+        "narration":       "Build the column widths.",
+        "sourcePath":      { "fileName": "data", "filePath": ["columns"] },
+        "templateKey":     "buildColGroup",
+        "func":            "fromCollection",
+        "destinationPath": { "fileName": "base", "dataRole": "table-colgroup", "filePath": ["children"] }
+    }
+]
+```
+
+Same format for options — only the keys change:
+```json
+[
+    {
+        "narration":       "Build option elements.",
+        "sourcePath":      { "fileName": "data", "filePath": ["items"] },
+        "templateKey":     "buildOption",
+        "func":            "fromCollection",
+        "destinationPath": { "fileName": "base", "dataRole": "select-control", "filePath": ["children"] }
+    }
+]
+```
+
+### 4. `index.js` — The Runner
+
+```javascript
+import { fromCollection, twoDimensional, resolvePath } from "json-transformer-funcs";
+
+const registry = { data, base, spec };
+const functions = { fromCollection, twoDimensional };
+
+const runInstructions = instructions => {
+    instructions.forEach(instruction => {
+        const source = resolvePath(registry, instruction.sourcePath);
+        if (source) {
+            const result = functions[instruction.func](source, spec[instruction.templateKey]);
+            writePath(registry, instruction.destinationPath, result);
+        }
+    });
+};
+```
+
+Three lines per instruction: **Read source → Transform → Write to base**. The runner does not know what it is building.
+
+---
+
+## Samples (v24)
+
+```
+samples/v24/
+  table/simple/              full table: colgroup + header + body rows
+  selectOptionsOnly/simple/  raw <option> list only
+  select/simple/             <select> filled with <option> children
+  dataList/simple/           <datalist> filled with <option> children
+```
+
+```bash
+node ./samples/v24/table/simple/index.js
+node ./samples/v24/select/simple/index.js
+node ./samples/v24/dataList/simple/index.js
+node ./samples/v24/selectOptionsOnly/simple/index.js
+```
+
+---
+
+## Sibling Packages
+
+| Package | npm |
+| :--- | :--- |
+| `json-transformer-funcs-primitive` | [![npm](https://img.shields.io/npm/v/json-transformer-funcs-primitive)](https://www.npmjs.com/package/json-transformer-funcs-primitive) |
+| `json-transformer-funcs-one-dimension` | [![npm](https://img.shields.io/npm/v/json-transformer-funcs-one-dimension)](https://www.npmjs.com/package/json-transformer-funcs-one-dimension) |
+| `json-transformer-funcs-two-dimensions` | [![npm](https://img.shields.io/npm/v/json-transformer-funcs-two-dimensions)](https://www.npmjs.com/package/json-transformer-funcs-two-dimensions) |
+
+---
 
 ## License
 
-MIT — see [package.json](package.json).
+MIT (c) KeshavSoft
