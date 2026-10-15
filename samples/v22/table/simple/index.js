@@ -1,7 +1,7 @@
 import {
     fromCollection, tableBody, buildBody,
     findByRole, resolvePath, applyTemplate
-} from "../../../../src/v22/index.js";
+} from "../../../../src/v23/index.js";
 
 import spec from "./spec.json" with { type: "json" };
 import base from "./config/base.json" with { type: "json" };

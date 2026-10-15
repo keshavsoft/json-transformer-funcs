@@ -5,16 +5,11 @@ import applyTemplate from "./primitive/applyTemplate/index.js";
 import fromCollection from "./oneDimensional/fromCollection/index.js";
 
 // 3. Two-Dimensional (2D Matrix: Table body rows & cells)
-import buildBody from "./twoDimensional/buildBody/index.js";
-import tableBody from "./twoDimensional/tableBody/index.js";
+import twoDimensional from "./twoDimensional/index.js";
 
 // 4. Tree (DOM / Hierarchy utilities)
 import findByRole from "./tree/findByRole/index.js";
 import resolvePath from "./tree/resolvePath/index.js";
-
-// Declarative Aliases
-const buildRowCells = tableBody;
-const buildTableRows = buildBody;
 
 export {
     // 1. Primitive
@@ -24,10 +19,7 @@ export {
     fromCollection,
 
     // 3. Two-Dimensional
-    buildBody,
-    tableBody,
-    buildTableRows,
-    buildRowCells,
+    twoDimensional,
 
     // 4. Tree
     findByRole,

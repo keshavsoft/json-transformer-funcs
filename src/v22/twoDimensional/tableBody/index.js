@@ -1,13 +1,16 @@
 import applyTemplate from "../../primitive/applyTemplate/index.js";
-//here we loop through the incolumns collection and for each column create a cell
-// in the resulting object
-// and then return the rowCells collection
-//here now we have changed this inTemplate as full templatejson, and keys will be pulled from incolumns
-//still planning to complete drive from columns only at all places
+
+/**
+ * Builds the cells (<td>) for a single table row across all configured columns.
+ * 
+ * @param {Object} inTemplate - The template specification catalog (spec.json).
+ * @param {Object} inRowData - The data record for this specific row.
+ * @param {Array} inColumns - The column definitions configuring width, template, and columnName.
+ * @returns {Array} Array of populated cell nodes for the row.
+ */
 const startFunc = (inTemplate, inRowData, inColumns) => {
     const localColumns = inColumns;
     const localRowData = inRowData;
-    // console.log("inTemplate : ", inTemplate);
 
     let rowCells = [];
 
@@ -15,20 +18,12 @@ const startFunc = (inTemplate, inRowData, inColumns) => {
         const loopInsideSpec = inTemplate[element?.template?.bodyCell];
 
         if (loopInsideSpec) {
-            // console.log("---------sssssss : ", loopInsideSpec, element);
+            // Attach the current row's field value so applyTemplate can resolve ${rowValue} or ${agg:count}
             element.rowData = localRowData[element.columnName];
 
             const bodyCell = applyTemplate(loopInsideSpec, element);
-            // console.log("---------bodyCell : ", bodyCell);
-            // let bodyCell = structuredClone(loopInsideSpec);
-            // console.log("bodyCell-------- : ", bodyCell);
-
-            // if ("textContent" in bodyCell) {
-            //     bodyCell.textContent = localRowData[element.columnName];
-            // };
-
             rowCells.push(bodyCell);
-        };
+        }
     });
 
     return rowCells;

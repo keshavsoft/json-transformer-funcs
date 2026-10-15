@@ -1,0 +1,20 @@
+[
+    {
+        "narration": "Build the header row for the table using the configured columns.",
+        "destinationPath": {
+            "fileName": "base",
+            "dataRole": "table-body",
+            "filePath": [
+                "children"
+            ]
+        },
+        "sourcePath": {
+            "fileName": "data",
+            "filePath": [
+                "columns"
+            ]
+        },
+        "templateKey": "buildHeader",
+        "func": "twoDimensional"
+    }
+]
