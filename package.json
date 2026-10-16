@@ -1,6 +1,6 @@
 {
   "name": "json-transformer-funcs",
-  "version": "1.24.4",
+  "version": "1.24.6",
   "description": "Pure JSON Specification Compiler with jsonToSpec namespace: (structure, data) -> Spec JSON",
   "main": "./src/index.js",
   "module": "./src/index.js",
@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "json-transformer-funcs-one-dimension": "^1.5.2",
-    "json-transformer-funcs-primitive": "^1.6.1",
+    "json-transformer-funcs-primitive": "^1.8.1",
     "json-transformer-funcs-two-dimensions": "^1.5.2"
   }
 }
